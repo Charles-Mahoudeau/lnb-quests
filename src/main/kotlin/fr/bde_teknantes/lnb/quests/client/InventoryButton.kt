@@ -2,10 +2,9 @@ package fr.bde_teknantes.lnb.quests.client
 
 import fr.bde_teknantes.lnb.quests.network.OpenQuestsPayload
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.gui.components.Button
+import net.minecraft.client.gui.components.AbstractButton
 import net.minecraft.client.gui.components.Tooltip
-import net.minecraft.client.gui.components.WidgetSprites
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
@@ -14,17 +13,19 @@ import net.neoforged.neoforge.client.event.ScreenEvent
 import net.neoforged.neoforge.network.PacketDistributor
 
 /**
- * A book button on the left of the survival inventory that opens the quest screen. Follows the inventory when the
- * recipe book moves it.
+ * The quest book's button on the survival inventory: LNB Economy's balance plaque turned on its side, coming 5 px over
+ * the inventory's left edge and held by two gold brackets, with a red badge while a reward waits for a claim. Follows
+ * the inventory when the recipe book moves it.
  */
 object InventoryButton {
-    private const val SIZE = 20
-    private var button: Button? = null
-    private val ICON = ItemStack(Items.WRITABLE_BOOK)
+    private const val W = 27
+    private const val H = 28
+    private const val OVER = 5
+    private var button: Plaque? = null
 
     fun onInit(event: ScreenEvent.Init.Post) {
         val screen = event.screen as? InventoryScreen ?: return
-        val created = BookButton()
+        val created = Plaque()
         created.setTooltip(Tooltip.create(Component.translatable("gui.lnbquests.open")))
         place(screen, created)
         event.addListener(created)
@@ -33,32 +34,45 @@ object InventoryButton {
 
     fun onRenderPre(event: ScreenEvent.Render.Pre) {
         val screen = event.screen as? InventoryScreen ?: return
-        button?.let { place(screen, it) }
-    }
-
-    /**
-     * Vanilla's button with the book drawn on it. Uses its own sprite set and narration rather than Button's
-     * protected statics, which a mod class can't reach at runtime.
-     */
-    private class BookButton : Button(
-        0, 0, SIZE, SIZE, Component.translatable("gui.lnbquests.open"),
-        { PacketDistributor.sendToServer(OpenQuestsPayload) },
-        { narration -> narration.get() },
-    ) {
-        override fun renderWidget(graphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-            graphics.blitSprite(BUTTON.get(active, isHoveredOrFocused), x, y, width, height)
-            graphics.renderItem(ICON, x + 2, y + 2)
+        button?.let {
+            place(screen, it)
+            val tip = if (ClientQuests.unclaimed > 0) {
+                Component.translatable("gui.lnbquests.open").append("\n").append(
+                    Component.translatable("gui.lnbquests.open.unclaimed", ClientQuests.unclaimed).withColor(QuestUi.GOLD_TEXT),
+                )
+            } else {
+                Component.translatable("gui.lnbquests.open")
+            }
+            it.setTooltip(Tooltip.create(tip))
         }
     }
 
-    private val BUTTON = WidgetSprites(
-        ResourceLocation.withDefaultNamespace("widget/button"),
-        ResourceLocation.withDefaultNamespace("widget/button_disabled"),
-        ResourceLocation.withDefaultNamespace("widget/button_highlighted"),
-    )
+    private fun place(screen: InventoryScreen, plaque: Plaque) {
+        plaque.inventoryLeft = screen.guiLeft
+        plaque.x = screen.guiLeft - W + OVER
+        plaque.y = screen.guiTop + 8
+    }
 
-    private fun place(screen: InventoryScreen, button: Button) {
-        button.x = screen.guiLeft - SIZE - 2
-        button.y = screen.guiTop + 4
+    private class Plaque : AbstractButton(0, 0, W, H, Component.translatable("gui.lnbquests.open")) {
+        var inventoryLeft = 0
+        private val icon = ItemStack(Items.WRITABLE_BOOK)
+
+        override fun onPress() = PacketDistributor.sendToServer(OpenQuestsPayload)
+
+        override fun renderWidget(graphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+            graphics.blitSprite(QuestUi.PLAQUE_SIDE, x, y, W, H)
+            graphics.blitSprite(QuestUi.SECONDARY.get(true, isHoveredOrFocused), x + 4, y + 4, 20, 20)
+            graphics.renderFakeItem(icon, x + 6, y + 6)
+            graphics.blitSprite(QuestUi.BRACKET_SIDE_TOP, inventoryLeft - 8, y - 6, 13, 7)
+            graphics.blitSprite(QuestUi.BRACKET_SIDE_BOTTOM, inventoryLeft - 8, y + H - 1, 13, 7)
+            if (ClientQuests.unclaimed > 0) {
+                graphics.pose().pushPose()
+                graphics.pose().translate(0f, 0f, 200f)
+                graphics.blitSprite(QuestUi.BADGE_READY, x - 2, y - 3, 8, 8)
+                graphics.pose().popPose()
+            }
+        }
+
+        override fun updateWidgetNarration(output: NarrationElementOutput) = defaultButtonNarrationText(output)
     }
 }

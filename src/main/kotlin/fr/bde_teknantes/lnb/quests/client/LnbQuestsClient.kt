@@ -7,5 +7,6 @@ object LnbQuestsClient {
     fun init() {
         NeoForge.EVENT_BUS.addListener(InventoryButton::onInit)
         NeoForge.EVENT_BUS.addListener(InventoryButton::onRenderPre)
+        NeoForge.EVENT_BUS.addListener(FlashBossBar::onBossBar)
     }
 }

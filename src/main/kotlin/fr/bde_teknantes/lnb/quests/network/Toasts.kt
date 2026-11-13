@@ -16,7 +16,7 @@ object Toasts {
         return ItemStack(item ?: Items.WRITABLE_BOOK)
     }
 
-    fun send(player: ServerPlayer, title: Component, description: Component, icon: ItemStack) {
-        PacketDistributor.sendToPlayer(player, QuestToastPayload(title, description, icon))
+    fun send(player: ServerPlayer, title: Component, description: Component, icon: ItemStack, level: Int = 1) {
+        PacketDistributor.sendToPlayer(player, QuestToastPayload(title, description, icon, level))
     }
 }

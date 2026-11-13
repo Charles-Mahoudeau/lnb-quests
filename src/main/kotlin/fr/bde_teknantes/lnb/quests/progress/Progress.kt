@@ -130,10 +130,12 @@ object Progress {
                         Component.translatable("toast.lnbquests.tier", tier),
                         Component.translatable("toast.lnbquests.tier.description", quest.name.get(Texts.language(player)), Texts.number(result.amount, player)),
                         Toasts.icon(quest),
+                        tier,
                     )
                     checkTiers(player, quest, mine)
                 }
                 QuestScreens.refresh(server, uuid)
+                player?.let(QuestScreens::sendBadge)
             }
             is Outcome.Refused -> {
                 val problem = (outcome.result as? ApiResult.Http)?.problem

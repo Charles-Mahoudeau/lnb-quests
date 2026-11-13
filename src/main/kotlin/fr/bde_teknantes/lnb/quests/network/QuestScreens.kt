@@ -70,10 +70,21 @@ object QuestScreens {
                     flash = flash,
                     kGlobal = Catalog.config.index.kGlobal,
                     siteUrl = if (ServerConfig.isApiConfigured) ServerConfig.API_URL.get().trimEnd('/') else "",
+                    flashHistory = FlashRaces.history.toList(),
+                    nextFlashAt = FlashRaces.nextDrawAt(),
                 )
                 viewers.add(player.uuid)
                 PacketDistributor.sendToPlayer(player, QuestScreenPayload(ApiClient.GSON.toJson(data), open))
             }
+        }
+    }
+
+    /** Tells the client how many rewards wait, for the badge on the inventory button. */
+    fun sendBadge(player: ServerPlayer) {
+        val server = player.server
+        QuestsApi.player(player.uuid).thenAccept { result ->
+            val count = (result as? ApiResult.Ok)?.body?.completions?.count { it.claimedAt == null } ?: return@thenAccept
+            server.execute { if (!player.hasDisconnected()) PacketDistributor.sendToPlayer(player, QuestBadgePayload(count)) }
         }
     }
 
@@ -92,7 +103,7 @@ object QuestScreens {
     fun handleClaim(payload: ClaimPayload, context: IPayloadContext) {
         val player = context.player() as? ServerPlayer ?: return
         if (!claiming.add(payload.completionId)) return
-        QuestJournal.submit("/completions/${payload.completionId}/claim", CLAIM, mapOf("player" to player.uuid.toString(), "completion" to payload.completionId)) { key ->
+        QuestJournal.submit("/completions/${payload.completionId}/claim", CLAIM, mapOf("player" to player.uuid.toString(), "completion" to payload.completionId, "quest" to payload.questId)) { key ->
             ClaimBody(key, player.uuid.toString())
         }
     }
@@ -111,13 +122,14 @@ object QuestScreens {
                         player,
                         Component.translatable("toast.lnbquests.claim"),
                         Component.translatable("toast.lnbquests.claim.description", Texts.number(result.amount, player)),
-                        Toasts.icon(null),
+                        Toasts.icon(Catalog.quest(entry.data["quest"] ?: "")),
                     )
                     if (result.mailboxItems > 0) {
                         player.sendSystemMessage(Component.translatable("chat.lnbquests.mailbox", result.mailboxItems).withStyle(ChatFormatting.GRAY))
                     }
                 }
                 refresh(server, uuid)
+                player?.let(::sendBadge)
             }
             is Outcome.Refused -> {
                 val problem = (outcome.result as? ApiResult.Http)?.problem

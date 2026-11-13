@@ -24,12 +24,16 @@ object OpenQuestsPayload : CustomPacketPayload {
 }
 
 /** Client claims a tier. */
-data class ClaimPayload(val completionId: String) : CustomPacketPayload {
+data class ClaimPayload(val completionId: String, val questId: String) : CustomPacketPayload {
     override fun type() = TYPE
 
     companion object {
         val TYPE = type<ClaimPayload>("claim")
-        val STREAM_CODEC: StreamCodec<ByteBuf, ClaimPayload> = ByteBufCodecs.STRING_UTF8.map(::ClaimPayload, ClaimPayload::completionId)
+        val STREAM_CODEC: StreamCodec<ByteBuf, ClaimPayload> = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, ClaimPayload::completionId,
+            ByteBufCodecs.STRING_UTF8, ClaimPayload::questId,
+            ::ClaimPayload,
+        )
     }
 }
 
@@ -72,7 +76,7 @@ object ClosedQuestsPayload : CustomPacketPayload {
  * A notification in the corner of the screen, like an advancement's: [icon], a gold [title] and a [description].
  * Components travel as components, so translations resolve in the player's language.
  */
-data class QuestToastPayload(val title: Component, val description: Component, val icon: ItemStack) : CustomPacketPayload {
+data class QuestToastPayload(val title: Component, val description: Component, val icon: ItemStack, val level: Int) : CustomPacketPayload {
     override fun type() = TYPE
 
     companion object {
@@ -81,7 +85,18 @@ data class QuestToastPayload(val title: Component, val description: Component, v
             ComponentSerialization.STREAM_CODEC, QuestToastPayload::title,
             ComponentSerialization.STREAM_CODEC, QuestToastPayload::description,
             ItemStack.OPTIONAL_STREAM_CODEC, QuestToastPayload::icon,
+            ByteBufCodecs.VAR_INT, QuestToastPayload::level,
             ::QuestToastPayload,
         )
+    }
+}
+
+/** How many rewards wait for a claim: the red badge on the inventory button. */
+data class QuestBadgePayload(val unclaimed: Int) : CustomPacketPayload {
+    override fun type() = TYPE
+
+    companion object {
+        val TYPE = type<QuestBadgePayload>("badge")
+        val STREAM_CODEC: StreamCodec<ByteBuf, QuestBadgePayload> = ByteBufCodecs.VAR_INT.map(::QuestBadgePayload, QuestBadgePayload::unclaimed)
     }
 }

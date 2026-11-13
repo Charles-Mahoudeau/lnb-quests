@@ -50,6 +50,11 @@ object FlashRaces {
 
     var current: Run? = null
         private set
+
+    /** The last races, newest first, for the screen. In memory only. */
+    val history = ArrayDeque<fr.bde_teknantes.lnb.quests.network.FlashEntry>()
+
+    fun nextDrawAt(): Long = nextDraw?.toEpochMilli() ?: 0
     private var nextDraw: Instant? = null
     private var ticks = 0
 
@@ -125,12 +130,15 @@ object FlashRaces {
         val left = run.endsAt.epochSecond - now.epochSecond
         val clock = "%d:%02d".format(left / 60, left % 60)
         val leader = run.leader()
-        val title = Component.literal("⚡ ").append(Component.literal(run.quest.name.fr)).append(" : ${run.quantity}  ")
-            .append(
-                if (leader == null) Component.translatable("bossbar.lnbquests.flash.nobody")
-                else Component.translatable("bossbar.lnbquests.flash.leader", run.names[leader.first] ?: "?", leader.second, run.quantity),
-            )
-            .append("  $clock")
+        // A translatable root, so the client recognises the bar and draws it in the quest style.
+        val title = Component.translatable(
+            "bossbar.lnbquests.flash",
+            Component.literal(run.quest.name.fr),
+            run.quantity,
+            if (leader == null) Component.translatable("bossbar.lnbquests.flash.nobody")
+            else Component.translatable("bossbar.lnbquests.flash.leader", run.names[leader.first] ?: "?", leader.second, run.quantity),
+            clock,
+        )
         run.bar.name = title
         val total = (run.endsAt.epochSecond - run.startedAt.epochSecond).coerceAtLeast(1)
         run.bar.progress = (left.toFloat() / total).coerceIn(0f, 1f)
@@ -169,6 +177,8 @@ object FlashRaces {
             }
             viewer.sendSystemMessage(text.withStyle(ChatFormatting.LIGHT_PURPLE))
         }
+        history.addFirst(fr.bde_teknantes.lnb.quests.network.FlashEntry(run.quest.id, run.quantity, winner?.gameProfile?.name, 0, ended.toEpochMilli()))
+        while (history.size > 6) history.removeLast()
         QuestJournal.submit("/flash", PURPOSE, mapOf("winner" to (winner?.uuid?.toString() ?: ""), "quest" to run.quest.id)) { key ->
             FlashBody(key, run.quest.id, run.quantity, run.startedAt.toString(), ended.toString(), winner?.uuid?.toString())
         }
@@ -180,6 +190,8 @@ object FlashRaces {
         when (outcome) {
             is Outcome.Done -> {
                 val result = outcome.decode<FlashResult>()
+                val index = history.indexOfFirst { it.winner == player?.gameProfile?.name && it.quest == entry.data["quest"] && it.amount == 0L }
+                if (index >= 0) history[index] = history[index].copy(amount = result.amount)
                 if (player != null && !result.replayed) {
                     player.sendSystemMessage(Component.translatable("chat.lnbquests.flash.paid", Texts.amount(result.amount, player)).withStyle(ChatFormatting.GOLD))
                     val quest = Catalog.quest(entry.data["quest"] ?: "")

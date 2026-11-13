@@ -14,6 +14,15 @@ data class FlashView(
     val mine: Long = 0,
 )
 
+/** A flash race that ended, for the history. */
+data class FlashEntry(
+    val quest: String = "",
+    val quantity: Int = 0,
+    val winner: String? = null,
+    val amount: Long = 0,
+    val endedAt: Long = 0,
+)
+
 /** Everything the quest screen shows, sent as JSON in [QuestScreenPayload]. */
 data class ScreenData(
     val season: Int = 0,
@@ -27,4 +36,7 @@ data class ScreenData(
     val flash: FlashView? = null,
     val kGlobal: Double = 1.0,
     val siteUrl: String = "",
+    val flashHistory: List<FlashEntry> = emptyList(),
+    /** When the next flash race may be drawn, in epoch millis, or 0 when unknown. */
+    val nextFlashAt: Long = 0,
 )

@@ -100,6 +100,7 @@ class LnbQuests(modBus: IEventBus, container: ModContainer) {
         Seasons.onLogin(player)
         FlashRaces.onLogin(player)
         CommunityQuest.onLogin(player)
+        QuestScreens.sendBadge(player)
     }
 
     private fun onLoggedOut(event: PlayerEvent.PlayerLoggedOutEvent) {
