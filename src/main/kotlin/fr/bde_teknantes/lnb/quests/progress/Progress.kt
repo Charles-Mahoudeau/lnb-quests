@@ -15,6 +15,7 @@ import fr.bde_teknantes.lnb.quests.journal.Outcome
 import fr.bde_teknantes.lnb.quests.journal.QuestJournal
 import fr.bde_teknantes.lnb.quests.Texts
 import fr.bde_teknantes.lnb.quests.network.QuestScreens
+import fr.bde_teknantes.lnb.quests.network.Toasts
 import fr.bde_teknantes.lnb.warden.common.api.ApiResult
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
@@ -124,7 +125,12 @@ object Progress {
                             .append(" ")
                             .append(Texts.openLink(player)),
                     )
-                    player.playNotifySound(net.minecraft.sounds.SoundEvents.PLAYER_LEVELUP, net.minecraft.sounds.SoundSource.PLAYERS, 0.6f, 1.2f)
+                    Toasts.send(
+                        player,
+                        Component.translatable("toast.lnbquests.tier", tier),
+                        Component.translatable("toast.lnbquests.tier.description", quest.name.get(Texts.language(player)), Texts.number(result.amount, player)),
+                        Toasts.icon(quest),
+                    )
                     checkTiers(player, quest, mine)
                 }
                 QuestScreens.refresh(server, uuid)

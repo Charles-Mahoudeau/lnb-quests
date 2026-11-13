@@ -2,6 +2,10 @@ package fr.bde_teknantes.lnb.quests.network
 
 import fr.bde_teknantes.lnb.quests.LnbQuests
 import io.netty.buffer.ByteBuf
+import net.minecraft.network.RegistryFriendlyByteBuf
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.ComponentSerialization
+import net.minecraft.world.item.ItemStack
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
@@ -62,4 +66,22 @@ object ClosedQuestsPayload : CustomPacketPayload {
     val STREAM_CODEC: StreamCodec<ByteBuf, ClosedQuestsPayload> = StreamCodec.unit(this)
 
     override fun type() = TYPE
+}
+
+/**
+ * A notification in the corner of the screen, like an advancement's: [icon], a gold [title] and a [description].
+ * Components travel as components, so translations resolve in the player's language.
+ */
+data class QuestToastPayload(val title: Component, val description: Component, val icon: ItemStack) : CustomPacketPayload {
+    override fun type() = TYPE
+
+    companion object {
+        val TYPE = type<QuestToastPayload>("toast")
+        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, QuestToastPayload> = StreamCodec.composite(
+            ComponentSerialization.STREAM_CODEC, QuestToastPayload::title,
+            ComponentSerialization.STREAM_CODEC, QuestToastPayload::description,
+            ItemStack.OPTIONAL_STREAM_CODEC, QuestToastPayload::icon,
+            ::QuestToastPayload,
+        )
+    }
 }

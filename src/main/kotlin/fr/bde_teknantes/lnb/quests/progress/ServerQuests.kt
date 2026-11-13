@@ -10,6 +10,7 @@ import fr.bde_teknantes.lnb.quests.journal.JournalEntry
 import fr.bde_teknantes.lnb.quests.journal.Outcome
 import fr.bde_teknantes.lnb.quests.journal.QuestJournal
 import fr.bde_teknantes.lnb.quests.network.QuestScreens
+import fr.bde_teknantes.lnb.quests.network.Toasts
 import fr.bde_teknantes.lnb.warden.common.api.ApiResult
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
@@ -71,11 +72,18 @@ object ServerQuests {
                             ).withStyle(ChatFormatting.GOLD),
                         )
                     }
-                    player?.playNotifySound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 0.8f, 1f)
                 } else if (player != null) {
                     player.sendSystemMessage(
                         Component.translatable("chat.lnbquests.ranked.private", rankText(result.rank, player), Texts.name(quest, player), Texts.amount(result.amount, player))
                             .withStyle(ChatFormatting.GOLD),
+                    )
+                }
+                if (player != null) {
+                    Toasts.send(
+                        player,
+                        Component.translatable("toast.lnbquests.rank", rankText(result.rank, player)),
+                        Component.translatable("toast.lnbquests.rank.description", quest.name.get(Texts.language(player)), Texts.number(result.amount, player)),
+                        Toasts.icon(quest),
                     )
                 }
                 if (player != null && result.mailboxItems > 0) {

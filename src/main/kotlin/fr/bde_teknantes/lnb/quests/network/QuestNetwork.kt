@@ -8,7 +8,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
  * changes, so mismatched client and server versions refuse to connect.
  */
 object QuestNetwork {
-    private const val PROTOCOL_VERSION = "1"
+    private const val PROTOCOL_VERSION = "2"
 
     fun register(event: RegisterPayloadHandlersEvent) {
         val registrar = event.registrar(PROTOCOL_VERSION)
@@ -19,6 +19,9 @@ object QuestNetwork {
         // Wrapped in a lambda so the client-only class only loads when a packet arrives.
         registrar.playToClient(QuestScreenPayload.TYPE, QuestScreenPayload.STREAM_CODEC) { payload, context ->
             ClientQuests.handleScreen(payload, context)
+        }
+        registrar.playToClient(QuestToastPayload.TYPE, QuestToastPayload.STREAM_CODEC) { payload, context ->
+            fr.bde_teknantes.lnb.quests.client.QuestToast.handle(payload, context)
         }
     }
 }

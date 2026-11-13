@@ -169,7 +169,6 @@ object FlashRaces {
             }
             viewer.sendSystemMessage(text.withStyle(ChatFormatting.LIGHT_PURPLE))
         }
-        winner?.playNotifySound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 0.8f, 1.2f)
         QuestJournal.submit("/flash", PURPOSE, mapOf("winner" to (winner?.uuid?.toString() ?: ""), "quest" to run.quest.id)) { key ->
             FlashBody(key, run.quest.id, run.quantity, run.startedAt.toString(), ended.toString(), winner?.uuid?.toString())
         }
@@ -183,6 +182,13 @@ object FlashRaces {
                 val result = outcome.decode<FlashResult>()
                 if (player != null && !result.replayed) {
                     player.sendSystemMessage(Component.translatable("chat.lnbquests.flash.paid", Texts.amount(result.amount, player)).withStyle(ChatFormatting.GOLD))
+                    val quest = Catalog.quest(entry.data["quest"] ?: "")
+                    fr.bde_teknantes.lnb.quests.network.Toasts.send(
+                        player,
+                        Component.translatable("toast.lnbquests.flash"),
+                        Component.translatable("toast.lnbquests.flash.description", Texts.number(result.amount, player)),
+                        fr.bde_teknantes.lnb.quests.network.Toasts.icon(quest),
+                    )
                 }
             }
             is Outcome.Refused -> {

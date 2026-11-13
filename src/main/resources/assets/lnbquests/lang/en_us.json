@@ -69,5 +69,13 @@
   "gui.lnbquests.flash.goal": "%s: %s",
   "gui.lnbquests.flash.left": "Time left: %s",
   "gui.lnbquests.flash.mine": "You: %s / %s",
-  "gui.lnbquests.flash.leader": "Leader: %s (%s)"
+  "gui.lnbquests.flash.leader": "Leader: %s (%s)",
+  "toast.lnbquests.tier": "Quest tier %s reached!",
+  "toast.lnbquests.tier.description": "%s: %s LNBits to claim",
+  "toast.lnbquests.rank": "Server quest: %s!",
+  "toast.lnbquests.rank.description": "%s: +%s LNBits",
+  "toast.lnbquests.flash": "Flash quest won!",
+  "toast.lnbquests.flash.description": "+%s LNBits",
+  "toast.lnbquests.claim": "Reward claimed",
+  "toast.lnbquests.claim.description": "+%s LNBits on your account"
 }

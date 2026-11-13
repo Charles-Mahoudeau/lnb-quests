@@ -107,6 +107,12 @@ object QuestScreens {
                 val result = outcome.decode<ClaimResult>()
                 if (player != null) {
                     player.sendSystemMessage(Component.translatable("chat.lnbquests.claim.done", Texts.amount(result.amount, player)).withStyle(ChatFormatting.GOLD))
+                    Toasts.send(
+                        player,
+                        Component.translatable("toast.lnbquests.claim"),
+                        Component.translatable("toast.lnbquests.claim.description", Texts.number(result.amount, player)),
+                        Toasts.icon(null),
+                    )
                     if (result.mailboxItems > 0) {
                         player.sendSystemMessage(Component.translatable("chat.lnbquests.mailbox", result.mailboxItems).withStyle(ChatFormatting.GRAY))
                     }
