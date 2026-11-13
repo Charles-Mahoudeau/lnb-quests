@@ -1,0 +1,782 @@
+{
+  "quests": [
+    {
+      "id": "mine_stone",
+      "family": "individual",
+      "category": "mining",
+      "name": {
+        "fr": "Casseur de pierre",
+        "en": "Stone breaker"
+      },
+      "icon": "minecraft:stone",
+      "objective": {
+        "type": "mine",
+        "target": "minecraft:stone"
+      },
+      "tiers": [
+        {
+          "amount": 1000,
+          "reward": 50
+        },
+        {
+          "amount": 10000,
+          "reward": 1000
+        },
+        {
+          "amount": 100000,
+          "reward": 5000
+        }
+      ]
+    },
+    {
+      "id": "mine_diamond",
+      "family": "individual",
+      "category": "mining",
+      "name": {
+        "fr": "Chercheur de diamants",
+        "en": "Diamond seeker"
+      },
+      "icon": "minecraft:diamond_ore",
+      "objective": {
+        "type": "mine",
+        "target": "#c:ores/diamond"
+      },
+      "tiers": [
+        {
+          "amount": 10,
+          "reward": 120
+        },
+        {
+          "amount": 100,
+          "reward": 1500
+        },
+        {
+          "amount": 500,
+          "reward": 6000
+        }
+      ]
+    },
+    {
+      "id": "mine_netherrack",
+      "family": "individual",
+      "category": "mining",
+      "name": {
+        "fr": "Spéléologue du Nether",
+        "en": "Nether caver"
+      },
+      "icon": "minecraft:netherrack",
+      "objective": {
+        "type": "mine",
+        "target": "minecraft:netherrack"
+      },
+      "tiers": [
+        {
+          "amount": 2000,
+          "reward": 60
+        },
+        {
+          "amount": 20000,
+          "reward": 900
+        },
+        {
+          "amount": 200000,
+          "reward": 4500
+        }
+      ]
+    },
+    {
+      "id": "kill_zombie",
+      "family": "individual",
+      "category": "combat",
+      "name": {
+        "fr": "Chasseur de zombies",
+        "en": "Zombie hunter"
+      },
+      "icon": "minecraft:rotten_flesh",
+      "objective": {
+        "type": "kill",
+        "target": "minecraft:zombie"
+      },
+      "tiers": [
+        {
+          "amount": 100,
+          "reward": 80
+        },
+        {
+          "amount": 1000,
+          "reward": 900
+        },
+        {
+          "amount": 10000,
+          "reward": 4000
+        }
+      ]
+    },
+    {
+      "id": "kill_enderman",
+      "family": "individual",
+      "category": "combat",
+      "name": {
+        "fr": "Fléau des Endermen",
+        "en": "Enderman bane"
+      },
+      "icon": "minecraft:ender_pearl",
+      "objective": {
+        "type": "kill",
+        "target": "minecraft:enderman"
+      },
+      "tiers": [
+        {
+          "amount": 50,
+          "reward": 150
+        },
+        {
+          "amount": 500,
+          "reward": 1200
+        },
+        {
+          "amount": 2500,
+          "reward": 5000
+        }
+      ]
+    },
+    {
+      "id": "fish_any",
+      "family": "individual",
+      "category": "fishing",
+      "name": {
+        "fr": "Patience de pêcheur",
+        "en": "Patient angler"
+      },
+      "icon": "minecraft:fishing_rod",
+      "objective": {
+        "type": "fish"
+      },
+      "tiers": [
+        {
+          "amount": 100,
+          "reward": 70
+        },
+        {
+          "amount": 1000,
+          "reward": 900
+        },
+        {
+          "amount": 5000,
+          "reward": 3500
+        }
+      ]
+    },
+    {
+      "id": "travel_far",
+      "family": "individual",
+      "category": "exploration",
+      "name": {
+        "fr": "Grand voyageur",
+        "en": "Long-distance traveller"
+      },
+      "icon": "minecraft:compass",
+      "objective": {
+        "type": "travel"
+      },
+      "tiers": [
+        {
+          "amount": 50000,
+          "reward": 60
+        },
+        {
+          "amount": 500000,
+          "reward": 800
+        },
+        {
+          "amount": 5000000,
+          "reward": 4000
+        }
+      ]
+    },
+    {
+      "id": "craft_iron",
+      "family": "individual",
+      "category": "crafting",
+      "name": {
+        "fr": "Forgeron",
+        "en": "Blacksmith"
+      },
+      "icon": "minecraft:iron_ingot",
+      "objective": {
+        "type": "craft",
+        "target": "minecraft:iron_ingot"
+      },
+      "tiers": [
+        {
+          "amount": 500,
+          "reward": 60
+        },
+        {
+          "amount": 5000,
+          "reward": 900
+        },
+        {
+          "amount": 25000,
+          "reward": 3500
+        }
+      ]
+    },
+    {
+      "id": "deliver_wool",
+      "family": "individual",
+      "category": "delivery",
+      "name": {
+        "fr": "Mécène des arts",
+        "en": "Patron of the arts"
+      },
+      "icon": "minecraft:white_wool",
+      "objective": {
+        "type": "deliver",
+        "target": "#minecraft:wool"
+      },
+      "tiers": [
+        {
+          "amount": 256,
+          "reward": 90
+        },
+        {
+          "amount": 2048,
+          "reward": 1100
+        },
+        {
+          "amount": 8192,
+          "reward": 4200
+        }
+      ]
+    },
+    {
+      "id": "free_the_end",
+      "family": "server",
+      "name": {
+        "fr": "Free the End",
+        "en": "Free the End"
+      },
+      "icon": "minecraft:dragon_head",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:end/kill_dragon",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "how_did_we_get_here",
+      "family": "server",
+      "name": {
+        "fr": "How Did We Get Here?",
+        "en": "How Did We Get Here?"
+      },
+      "icon": "minecraft:potion",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:nether/all_effects",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "adventuring_time",
+      "family": "server",
+      "name": {
+        "fr": "Adventuring Time",
+        "en": "Adventuring Time"
+      },
+      "icon": "minecraft:diamond_boots",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:adventure/adventuring_time",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "monsters_hunted",
+      "family": "server",
+      "name": {
+        "fr": "Monsters Hunted",
+        "en": "Monsters Hunted"
+      },
+      "icon": "minecraft:diamond_sword",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:adventure/kill_all_mobs",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "balanced_diet",
+      "family": "server",
+      "name": {
+        "fr": "A Balanced Diet",
+        "en": "A Balanced Diet"
+      },
+      "icon": "minecraft:apple",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:husbandry/balanced_diet",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "two_by_two",
+      "family": "server",
+      "name": {
+        "fr": "Two by Two",
+        "en": "Two by Two"
+      },
+      "icon": "minecraft:golden_carrot",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:husbandry/bred_all_animals",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "serious_dedication",
+      "family": "server",
+      "name": {
+        "fr": "Serious Dedication",
+        "en": "Serious Dedication"
+      },
+      "icon": "minecraft:netherite_hoe",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:husbandry/obtain_netherite_hoe",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "arbalistic",
+      "family": "server",
+      "name": {
+        "fr": "Arbalistic",
+        "en": "Arbalistic"
+      },
+      "icon": "minecraft:crossbow",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:adventure/arbalistic",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "the_end",
+      "family": "server",
+      "name": {
+        "fr": "The End?",
+        "en": "The End?"
+      },
+      "icon": "minecraft:end_stone",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:story/enter_the_end",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "withering_heights",
+      "family": "server",
+      "name": {
+        "fr": "Withering Heights",
+        "en": "Withering Heights"
+      },
+      "icon": "minecraft:wither_skeleton_skull",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:nether/summon_wither",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "beaconator",
+      "family": "server",
+      "name": {
+        "fr": "Beaconator",
+        "en": "Beaconator"
+      },
+      "icon": "minecraft:beacon",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:nether/create_full_beacon",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "cover_me_in_debris",
+      "family": "server",
+      "name": {
+        "fr": "Cover Me in Debris",
+        "en": "Cover Me in Debris"
+      },
+      "icon": "minecraft:netherite_chestplate",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:nether/netherite_armor",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "skys_the_limit",
+      "family": "server",
+      "name": {
+        "fr": "The Sky's the Limit",
+        "en": "The Sky's the Limit"
+      },
+      "icon": "minecraft:elytra",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:end/elytra",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "hot_tourist_destinations",
+      "family": "server",
+      "name": {
+        "fr": "Hot Tourist Destinations",
+        "en": "Hot Tourist Destinations"
+      },
+      "icon": "minecraft:crimson_nylium",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:nether/explore_nether",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "hero_of_the_village",
+      "family": "server",
+      "name": {
+        "fr": "Hero of the Village",
+        "en": "Hero of the Village"
+      },
+      "icon": "minecraft:white_banner",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:adventure/hero_of_the_village",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "uneasy_alliance",
+      "family": "server",
+      "name": {
+        "fr": "Uneasy Alliance",
+        "en": "Uneasy Alliance"
+      },
+      "icon": "minecraft:ghast_tear",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:nether/uneasy_alliance",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "over_overkill",
+      "family": "server",
+      "name": {
+        "fr": "Over-Overkill",
+        "en": "Over-Overkill"
+      },
+      "icon": "minecraft:mace",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:adventure/overoverkill",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "eye_spy",
+      "family": "server",
+      "name": {
+        "fr": "Eye Spy",
+        "en": "Eye Spy"
+      },
+      "icon": "minecraft:ender_eye",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:story/follow_ender_eye",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "we_need_to_go_deeper",
+      "family": "server",
+      "name": {
+        "fr": "We Need to Go Deeper",
+        "en": "We Need to Go Deeper"
+      },
+      "icon": "minecraft:obsidian",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:story/enter_the_nether",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "diamonds",
+      "family": "server",
+      "name": {
+        "fr": "Diamonds!",
+        "en": "Diamonds!"
+      },
+      "icon": "minecraft:diamond",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:story/mine_diamond",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "into_fire",
+      "family": "server",
+      "name": {
+        "fr": "Into Fire",
+        "en": "Into Fire"
+      },
+      "icon": "minecraft:blaze_rod",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:nether/obtain_blaze_rod",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "local_brewery",
+      "family": "server",
+      "name": {
+        "fr": "Local Brewery",
+        "en": "Local Brewery"
+      },
+      "icon": "minecraft:brewing_stand",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:nether/brew_potion",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "enchanter",
+      "family": "server",
+      "name": {
+        "fr": "Enchanter",
+        "en": "Enchanter"
+      },
+      "icon": "minecraft:enchanting_table",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:story/enchant_item",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "zombie_doctor",
+      "family": "server",
+      "name": {
+        "fr": "Zombie Doctor",
+        "en": "Zombie Doctor"
+      },
+      "icon": "minecraft:golden_apple",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:story/cure_zombie_villager",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "sniper_duel",
+      "family": "server",
+      "name": {
+        "fr": "Sniper Duel",
+        "en": "Sniper Duel"
+      },
+      "icon": "minecraft:arrow",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:adventure/sniper_duel",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "very_very_frightening",
+      "family": "server",
+      "name": {
+        "fr": "Very Very Frightening",
+        "en": "Very Very Frightening"
+      },
+      "icon": "minecraft:trident",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:adventure/very_very_frightening",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "total_beelocation",
+      "family": "server",
+      "name": {
+        "fr": "Total Beelocation",
+        "en": "Total Beelocation"
+      },
+      "icon": "minecraft:bee_nest",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:husbandry/silk_touch_nest",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "under_lock_and_key",
+      "family": "server",
+      "name": {
+        "fr": "Under Lock and Key",
+        "en": "Under Lock and Key"
+      },
+      "icon": "minecraft:trial_key",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:adventure/under_lock_and_key",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "smells_interesting",
+      "family": "server",
+      "name": {
+        "fr": "Smells Interesting",
+        "en": "Smells Interesting"
+      },
+      "icon": "minecraft:sniffer_egg",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "minecraft:husbandry/obtain_sniffer_egg",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "flash_fish",
+      "family": "flash",
+      "name": {
+        "fr": "Pêche éclair",
+        "en": "Quick fishing"
+      },
+      "icon": "minecraft:cod",
+      "objective": {
+        "type": "fish"
+      },
+      "range": {
+        "min": 5,
+        "max": 12
+      },
+      "rewardPerUnit": 4.5,
+      "weight": 3
+    },
+    {
+      "id": "flash_zombies",
+      "family": "flash",
+      "name": {
+        "fr": "Chasse aux zombies",
+        "en": "Zombie hunt"
+      },
+      "icon": "minecraft:rotten_flesh",
+      "objective": {
+        "type": "kill",
+        "target": "minecraft:zombie"
+      },
+      "range": {
+        "min": 8,
+        "max": 20
+      },
+      "rewardPerUnit": 4,
+      "weight": 3
+    },
+    {
+      "id": "flash_iron",
+      "family": "flash",
+      "name": {
+        "fr": "Ruée vers le fer",
+        "en": "Iron rush"
+      },
+      "icon": "minecraft:raw_iron",
+      "objective": {
+        "type": "mine",
+        "target": "#c:ores/iron"
+      },
+      "range": {
+        "min": 16,
+        "max": 48
+      },
+      "rewardPerUnit": 2,
+      "weight": 2
+    },
+    {
+      "id": "flash_torches",
+      "family": "flash",
+      "name": {
+        "fr": "Lumière !",
+        "en": "Light it up"
+      },
+      "icon": "minecraft:torch",
+      "objective": {
+        "type": "craft",
+        "target": "minecraft:torch"
+      },
+      "range": {
+        "min": 32,
+        "max": 64
+      },
+      "rewardPerUnit": 0.6,
+      "weight": 1
+    },
+    {
+      "id": "flash_run",
+      "family": "flash",
+      "name": {
+        "fr": "Course de fond",
+        "en": "Long run"
+      },
+      "icon": "minecraft:leather_boots",
+      "objective": {
+        "type": "travel"
+      },
+      "range": {
+        "min": 2000,
+        "max": 5000
+      },
+      "rewardPerUnit": 0.012,
+      "weight": 1
+    }
+  ]
+}
