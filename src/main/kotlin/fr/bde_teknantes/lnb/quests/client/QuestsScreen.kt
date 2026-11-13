@@ -300,7 +300,7 @@ class QuestsScreen(private var data: ScreenData) : Screen(Component.translatable
     override fun isPauseScreen() = false
 
     override fun removed() {
-        PacketDistributor.sendToServer(ClosedQuestsPayload())
+        PacketDistributor.sendToServer(ClosedQuestsPayload)
         super.removed()
     }
 }

@@ -22,7 +22,7 @@ object InventoryButton {
 
     fun onInit(event: ScreenEvent.Init.Post) {
         val screen = event.screen as? InventoryScreen ?: return
-        val created = object : Button(0, 0, SIZE, SIZE, Component.translatable("gui.lnbquests.open"), { PacketDistributor.sendToServer(OpenQuestsPayload()) }, DEFAULT_NARRATION) {
+        val created = object : Button(0, 0, SIZE, SIZE, Component.translatable("gui.lnbquests.open"), { PacketDistributor.sendToServer(OpenQuestsPayload) }, DEFAULT_NARRATION) {
             override fun renderWidget(graphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
                 graphics.blitSprite(SPRITES.get(active, isHoveredOrFocused), x, y, width, height)
                 graphics.renderItem(ICON, x + 2, y + 2)

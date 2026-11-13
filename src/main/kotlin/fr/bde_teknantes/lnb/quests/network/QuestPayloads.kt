@@ -9,14 +9,14 @@ import net.minecraft.resources.ResourceLocation
 
 private fun <T : CustomPacketPayload> type(name: String) = CustomPacketPayload.Type<T>(ResourceLocation.fromNamespaceAndPath(LnbQuests.ID, name))
 
-/** Client asks for the quest screen (inventory button, keybind-free). */
-class OpenQuestsPayload : CustomPacketPayload {
-    override fun type() = TYPE
+/**
+ * Client asks for the quest screen. A single instance: [StreamCodec.unit] only encodes the instance it was given.
+ */
+object OpenQuestsPayload : CustomPacketPayload {
+    val TYPE = type<OpenQuestsPayload>("open")
+    val STREAM_CODEC: StreamCodec<ByteBuf, OpenQuestsPayload> = StreamCodec.unit(this)
 
-    companion object {
-        val TYPE = type<OpenQuestsPayload>("open")
-        val STREAM_CODEC: StreamCodec<ByteBuf, OpenQuestsPayload> = StreamCodec.unit(OpenQuestsPayload())
-    }
+    override fun type() = TYPE
 }
 
 /** Client claims a tier. */
@@ -56,12 +56,10 @@ data class QuestScreenPayload(val json: String, val open: Boolean) : CustomPacke
     }
 }
 
-/** Client closed the quest screen: no more refreshes. */
-class ClosedQuestsPayload : CustomPacketPayload {
-    override fun type() = TYPE
+/** Client closed the quest screen: no more refreshes. A single instance, like [OpenQuestsPayload]. */
+object ClosedQuestsPayload : CustomPacketPayload {
+    val TYPE = type<ClosedQuestsPayload>("closed")
+    val STREAM_CODEC: StreamCodec<ByteBuf, ClosedQuestsPayload> = StreamCodec.unit(this)
 
-    companion object {
-        val TYPE = type<ClosedQuestsPayload>("closed")
-        val STREAM_CODEC: StreamCodec<ByteBuf, ClosedQuestsPayload> = StreamCodec.unit(ClosedQuestsPayload())
-    }
+    override fun type() = TYPE
 }
