@@ -263,7 +263,8 @@
       },
       "advancement": "minecraft:end/kill_dragon",
       "tier": "legendary",
-      "reward": 5000
+      "reward": 5000,
+      "hidden": true
     },
     {
       "id": "how_did_we_get_here",
@@ -682,6 +683,533 @@
         "type": "advancement"
       },
       "advancement": "minecraft:husbandry/obtain_sniffer_egg",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "create_long_train",
+      "family": "server",
+      "name": {
+        "fr": "Efforts ambitieux",
+        "en": "Ambitious Endeavours"
+      },
+      "icon": "minecraft:minecart",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "create:long_train",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "create_track_crafting_factory",
+      "family": "server",
+      "name": {
+        "fr": "Usine à rails",
+        "en": "Track Factory"
+      },
+      "icon": "create:mechanical_press",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "create:track_crafting_factory",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "create_steam_engine_maxed",
+      "family": "server",
+      "name": {
+        "fr": "À toute vapeur !",
+        "en": "Full Steam"
+      },
+      "icon": "create:steam_engine",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "create:steam_engine_maxed",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "create_windmill_maxed",
+      "family": "server",
+      "name": {
+        "fr": "Un vent de tempête",
+        "en": "A strong Breeze"
+      },
+      "icon": "create:white_sail",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "create:windmill_maxed",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "create_cart_pickup",
+      "family": "server",
+      "name": {
+        "fr": "Gros bras",
+        "en": "Strong Arms"
+      },
+      "icon": "create:chest_minecart_contraption",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "create:cart_pickup",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "create_hose_pulley_lava",
+      "family": "server",
+      "name": {
+        "fr": "Atteindre le manteau",
+        "en": "Tapping the Mantle"
+      },
+      "icon": "create:hose_pulley",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "create:hose_pulley_lava",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "create_brass",
+      "family": "server",
+      "name": {
+        "fr": "Vrais alliages",
+        "en": "Real Alloys"
+      },
+      "icon": "create:brass_ingot",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "create:brass",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "create_precision_mechanism",
+      "family": "server",
+      "name": {
+        "fr": "Curiosités complexes",
+        "en": "Complex Curiosities"
+      },
+      "icon": "create:precision_mechanism",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "create:precision_mechanism",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "create_train",
+      "family": "server",
+      "name": {
+        "fr": "En voiture !",
+        "en": "All Aboard!"
+      },
+      "icon": "create:track_station",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "create:train",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "create_long_travel",
+      "family": "server",
+      "name": {
+        "fr": "Excursion",
+        "en": "Field Trip"
+      },
+      "icon": "create:green_seat",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "create:long_travel",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "create_arm_many_targets",
+      "family": "server",
+      "name": {
+        "fr": "Organisation automatisée",
+        "en": "Organize-o-Tron"
+      },
+      "icon": "create:mechanical_arm",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "create:arm_many_targets",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "create_pulley_maxed",
+      "family": "server",
+      "name": {
+        "fr": "Descente vers l'inconnu",
+        "en": "Rope to Nowhere"
+      },
+      "icon": "create:rope_pulley",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "create:pulley_maxed",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "stellarity_conqueror",
+      "family": "server",
+      "name": {
+        "fr": "Conquérant",
+        "en": "Conqueror"
+      },
+      "icon": "minecraft:magenta_banner",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "stellarity:end_city/conqueror",
+      "tier": "legendary",
+      "reward": 5000,
+      "hidden": true
+    },
+    {
+      "id": "stellarity_fae_flayer",
+      "family": "server",
+      "name": {
+        "fr": "Fée Flayer",
+        "en": "Fae Flayer"
+      },
+      "icon": "minecraft:chiseled_quartz_block",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "stellarity:eol/fae_flayer",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "stellarity_discover_all_biomes",
+      "family": "server",
+      "name": {
+        "fr": "Voyageur intemporel",
+        "en": "Timeless Traveler"
+      },
+      "icon": "minecraft:leather_boots",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "stellarity:exploration/discover_all_biomes",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "stellarity_god_slayer",
+      "family": "server",
+      "name": {
+        "fr": "Tueur de Dieu",
+        "en": "God Slayer"
+      },
+      "icon": "minecraft:netherite_axe",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "stellarity:dragons_den/god_slayer",
+      "tier": "legendary",
+      "reward": 5000,
+      "hidden": true
+    },
+    {
+      "id": "stellarity_obtain_dragonblade",
+      "family": "server",
+      "name": {
+        "fr": "Dragonborn",
+        "en": "Dragonborn"
+      },
+      "icon": "minecraft:netherite_sword",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "stellarity:dragons_den/obtain_dragonblade",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "stellarity_summon_empress",
+      "family": "server",
+      "name": {
+        "fr": "The Queen of Flickering Lights",
+        "en": "The Queen of Flickering Lights"
+      },
+      "icon": "minecraft:glowstone_dust",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "stellarity:eol/summon_empress",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "stellarity_super_sonic",
+      "family": "server",
+      "name": {
+        "fr": "Super Sonic",
+        "en": "Super Sonic"
+      },
+      "icon": "minecraft:elytra",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "stellarity:end_city/super_sonic",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "stellarity_craft_full_shulker_armor",
+      "family": "server",
+      "name": {
+        "fr": "Je suis Titanium!",
+        "en": "I am Titanium!"
+      },
+      "icon": "minecraft:leather_chestplate",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "stellarity:aota/craft_full_shulker_armor",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "stellarity_topped_off",
+      "family": "server",
+      "name": {
+        "fr": "Topped Off",
+        "en": "Topped Off"
+      },
+      "icon": "minecraft:cooked_cod",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "stellarity:void_fishing/topped_off",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "stellarity_find_end_village",
+      "family": "server",
+      "name": {
+        "fr": "Echoué dans la Mer de l'Éternité",
+        "en": "Stranded in The Sea of Eternity"
+      },
+      "icon": "minecraft:amethyst_shard",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "stellarity:exploration/find_end_village",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "stellarity_enter_chapel",
+      "family": "server",
+      "name": {
+        "fr": "Jardins sacrés",
+        "en": "Sacred Gardens"
+      },
+      "icon": "minecraft:cherry_leaves",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "stellarity:exploration/enter_chapel",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "farmersdelight_master_chef",
+      "family": "server",
+      "name": {
+        "fr": "Master Chef",
+        "en": "Master Chef"
+      },
+      "icon": "farmersdelight:honey_glazed_ham",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "farmersdelight:main/master_chef",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "farmersdelight_plant_all_crops",
+      "family": "server",
+      "name": {
+        "fr": "Rotation des cultures",
+        "en": "Crop Rotation"
+      },
+      "icon": "farmersdelight:cabbage",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "farmersdelight:main/plant_all_crops",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "farmersdelight_obtain_netherite_knife",
+      "family": "server",
+      "name": {
+        "fr": "Qui craint le danger...",
+        "en": "If You Can't Take the Heat..."
+      },
+      "icon": "farmersdelight:netherite_knife",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "farmersdelight:main/obtain_netherite_knife",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "betterarcheology_all_fossils_found",
+      "family": "server",
+      "name": {
+        "fr": "Fierté du Paléontologue",
+        "en": "Paleontologist's Pride"
+      },
+      "icon": "betterarcheology:sheep_fossil",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "betterarcheology:all_fossils_found",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "betterdeserttemples_temple_clear",
+      "family": "server",
+      "name": {
+        "fr": "Eternal Slumber",
+        "en": "Eternal Slumber"
+      },
+      "icon": "minecraft:totem_of_undying",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "betterdeserttemples:temple_clear",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "betterdungeons_all_dungeons",
+      "family": "server",
+      "name": {
+        "fr": "Professional Dungeoneer",
+        "en": "Professional Dungeoneer"
+      },
+      "icon": "minecraft:diamond_sword",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "betterdungeons:all_dungeons",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "lootr_100loot",
+      "family": "server",
+      "name": {
+        "fr": "Centenaire",
+        "en": "Centennial"
+      },
+      "icon": "minecraft:netherite_block",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "lootr:100loot",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "betterarcheology_unidentified_artifact",
+      "family": "server",
+      "name": {
+        "fr": "Tout commence à s'assembler",
+        "en": "It's all coming together"
+      },
+      "icon": "betterarcheology:unidentified_artifact",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "betterarcheology:unidentified_artifact",
+      "tier": "rare",
+      "reward": 1000
+    },
+    {
+      "id": "tide_journal_completed",
+      "family": "server",
+      "name": {
+        "fr": "A Reel Completionist",
+        "en": "A Reel Completionist"
+      },
+      "icon": "tide:fishing_journal",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "tide:journal_completed",
+      "tier": "legendary",
+      "reward": 5000
+    },
+    {
+      "id": "tide_catch_legendary",
+      "family": "server",
+      "name": {
+        "fr": "One in a Million",
+        "en": "One in a Million"
+      },
+      "icon": "tide:shooting_starfish",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "tide:catch_legendary",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "tide_all_fishing_rods",
+      "family": "server",
+      "name": {
+        "fr": "Hooked on Variety",
+        "en": "Hooked on Variety"
+      },
+      "icon": "tide:crystal_fishing_rod",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "tide:all_fishing_rods",
+      "tier": "epic",
+      "reward": 2500
+    },
+    {
+      "id": "tide_journal_halfway_completed",
+      "family": "server",
+      "name": {
+        "fr": "Aquatic Archivist",
+        "en": "Aquatic Archivist"
+      },
+      "icon": "tide:fishy_note",
+      "objective": {
+        "type": "advancement"
+      },
+      "advancement": "tide:journal_halfway_completed",
       "tier": "rare",
       "reward": 1000
     },

@@ -10,11 +10,13 @@ import fr.bde_teknantes.lnb.quests.network.ScreenData
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
+import net.minecraft.client.resources.language.I18n
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.neoforged.fml.ModList
 import net.neoforged.neoforge.network.PacketDistributor
 import kotlin.math.roundToLong
 
@@ -34,6 +36,21 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         const val CHAIN_STEP = 48
         const val CHAIN_ROW = 56
         const val RECORD_STEP = 34
+
+        /** Records groups shown first, in this order; other mods follow. */
+        val GROUP_ORDER = listOf("overworld", "nether", "end", "create", "stellarity", "cooking", "exploration", "fishing")
+
+        /** Mods gathered under a theme in Records. Stellarity stays on its own: it is the End's content. */
+        val MOD_GROUPS = mapOf(
+            "farmersdelight" to "cooking",
+            "betterdeserttemples" to "exploration",
+            "betterdungeons" to "exploration",
+            "betterfortresses" to "exploration",
+            "betterstrongholds" to "exploration",
+            "betterarcheology" to "exploration",
+            "lootr" to "exploration",
+            "tide" to "fishing",
+        )
         const val RECORD_ROW = 44
         val CATEGORIES = listOf("mining", "combat", "fishing", "exploration", "crafting", "delivery")
         val CATEGORY_ICONS = mapOf(
@@ -105,13 +122,25 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
 
     private fun estimate(base: Double): Long = (base * data.kGlobal * kPlayer).roundToLong()
 
-    private fun dimension(quest: QuestDef): String {
-        val path = quest.advancement?.substringAfter(':') ?: ""
+    /**
+     * The Records group of a server quest: vanilla advancements by dimension, modded ones by mod, with a few mods
+     * gathered under one theme. A mod without a theme gets its own group, titled with its name.
+     */
+    private fun recordGroup(quest: QuestDef): String {
+        val id = quest.advancement?.let(ResourceLocation::tryParse) ?: return "overworld"
+        if (id.namespace != "minecraft") return MOD_GROUPS[id.namespace] ?: id.namespace
         return when {
-            path.startsWith("nether/") -> "nether"
-            path.startsWith("end/") -> "end"
+            id.path.startsWith("nether/") -> "nether"
+            id.path.startsWith("end/") -> "end"
             else -> "overworld"
         }
+    }
+
+    private fun recordGroupTitle(group: String): Component {
+        val key = "gui.lnbquests.group.$group"
+        if (I18n.exists(key)) return Component.translatable(key)
+        val name = ModList.get().getModContainerById(group).map { it.modInfo.displayName }.orElse(group)
+        return Component.literal(name)
     }
 
     /** "Mine 10 diamond ore": the objective in words, from its type, amount and target. */
@@ -322,7 +351,7 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         }
     }
 
-    // Records: one tree per dimension, nodes opening a popup with the podium.
+    // Records: one tree per dimension or mod, nodes opening a popup with the podium.
 
     private fun records(graphics: GuiGraphics) {
         heading(graphics, Component.translatable("gui.lnbquests.tab.server"), "${data.view?.ranks?.size ?: 0} / ${records.size}", canvasW)
@@ -330,12 +359,13 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         val top = canvasY + 22
         val bottom = canvasY + canvasH - 4
         var y = canvasY + 46 - scroll
-        val groups = listOf("overworld", "nether", "end").map { dim -> dim to records.filter { dimension(it) == dim } }.filter { it.second.isNotEmpty() }
+        val byGroup = records.groupBy(::recordGroup)
+        val groups = (GROUP_ORDER + byGroup.keys.filterNot(GROUP_ORDER::contains)).mapNotNull { key -> byGroup[key]?.let { key to it } }
         val contentHeight = groups.sumOf { (_, list) -> 18 + ((list.size + perRow - 1) / perRow) * RECORD_ROW }
         scroll = scroll.coerceIn(0, maxOf(0, contentHeight + 30 - (bottom - top)))
         graphics.enableScissor(canvasX + 2, top, canvasX + canvasW - 2, bottom)
         for ((dim, list) in groups) {
-            graphics.drawString(font, Component.translatable("gui.lnbquests.dimension.$dim"), canvasX + 10, y - 24, QuestUi.IVORY, true)
+            graphics.drawString(font, recordGroupTitle(dim), canvasX + 10, y - 24, QuestUi.IVORY, true)
             list.chunked(perRow).forEach { row ->
                 row.forEachIndexed { i, quest ->
                     val x = canvasX + 26 + i * RECORD_STEP
@@ -354,7 +384,7 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
                         podium.size >= (quest.ranks?.size ?: 3) -> NodeState.LOCKED
                         else -> NodeState.PROGRESS
                     }
-                    QuestUi.node(graphics, x, y, QuestUi.stack(quest.icon), state, 1)
+                    secretNode(graphics, x, y, quest, state)
                     if (y in top..bottom) {
                         val tip = mutableListOf<Component>(Component.literal(quest.name.get(language)))
                         podium.take(3).forEach { tip += Component.literal("${it.rank}. ${it.username}").withColor(if (it.rank == rank) QuestUi.GOLD_TEXT else QuestUi.DIM) }
@@ -368,6 +398,17 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         graphics.disableScissor()
     }
 
+    /** A record's node; a secret one (masked by the server) shows a gold "?" instead of its item. */
+    private fun secretNode(graphics: GuiGraphics, x: Int, y: Int, quest: QuestDef, state: NodeState, glow: Boolean = true) {
+        if (quest.hidden != true) return QuestUi.node(graphics, x, y, QuestUi.stack(quest.icon), state, 1, glow)
+        QuestUi.node(graphics, x, y, ItemStack.EMPTY, state, 1, glow)
+        graphics.pose().pushPose()
+        graphics.pose().translate(x.toFloat(), y.toFloat(), 0f)
+        graphics.pose().scale(2f, 2f, 1f)
+        graphics.drawString(font, "?", -font.width("?") / 2 + 1, -3, QuestUi.GOLD_TEXT, true)
+        graphics.pose().popPose()
+    }
+
     private fun recordPopup(graphics: GuiGraphics, quest: QuestDef) {
         hits.clear()
         graphics.pose().pushPose()
@@ -379,13 +420,17 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         val dy = (height - dh) / 2
         graphics.blitSprite(QuestUi.PANEL, dx, dy, dw, dh)
         val rank = data.view?.ranks?.get(quest.id)
-        QuestUi.node(graphics, dx + 26, dy + 26, QuestUi.stack(quest.icon), if (rank != null) NodeState.CLAIMED else NodeState.PROGRESS, 1, glow = false)
+        secretNode(graphics, dx + 26, dy + 26, quest, if (rank != null) NodeState.CLAIMED else NodeState.PROGRESS, glow = false)
         QuestUi.title(graphics, font, Component.literal(QuestUi.fit(font, quest.name.get(language), dw - 60)), dx + 48, dy + 16)
         val advancement = quest.advancement?.let(ResourceLocation::tryParse)?.let { id ->
             Minecraft.getInstance().connection?.advancements?.get(id)?.value()?.display()?.map { it.description }?.orElse(null)
         }
         val rarity = Component.translatable("gui.lnbquests.rarity.${quest.tier}")
-        val subtitle = if (advancement != null) rarity.copy().append(", ").append(advancement) else rarity
+        val subtitle = when {
+            quest.hidden == true -> rarity.copy().append(", ").append(Component.translatable("gui.lnbquests.secret"))
+            advancement != null -> rarity.copy().append(", ").append(advancement)
+            else -> rarity
+        }
         graphics.drawString(font, font.split(subtitle, dw - 60).firstOrNull() ?: subtitle.visualOrderText, dx + 48, dy + 28, QuestUi.DIM, true)
         graphics.blitSprite(QuestUi.PANEL_INSET, dx + 10, dy + 42, dw - 20, 84)
         graphics.drawString(font, Component.translatable("gui.lnbquests.podium"), dx + 16, dy + 47, QuestUi.IVORY, true)

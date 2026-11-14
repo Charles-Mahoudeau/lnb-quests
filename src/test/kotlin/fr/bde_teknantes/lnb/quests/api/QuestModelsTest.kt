@@ -13,7 +13,7 @@ class QuestModelsTest {
         val quests = JsonParser.parseString(text).asJsonObject.getAsJsonArray("quests").map { ApiClient.GSON.fromJson(it, QuestDef::class.java) }
         assertEquals(setOf("individual", "server", "flash"), quests.map { it.family }.toSet())
         assertTrue(quests.filter { it.isIndividual }.all { q -> q.tiers!!.zipWithNext().all { (a, b) -> b.amount > a.amount } })
-        assertTrue(quests.filter { it.isServer }.all { it.advancement!!.startsWith("minecraft:") })
+        assertTrue(quests.filter { it.isServer }.all { Regex("[a-z0-9_.-]+:[a-z0-9_./-]+").matches(it.advancement!!) })
         assertEquals(quests.size, quests.map { it.id }.toSet().size)
     }
 

@@ -35,6 +35,8 @@ data class QuestDef(
     val reward: Double? = null,
     val ranks: List<Double>? = null,
     val restShare: Double? = null,
+    /** A secret advancement: "???" until someone takes first place. Hidden advancements of the game count too. */
+    val hidden: Boolean? = null,
     val items: List<ItemReward>? = null,
     // flash
     val range: Range? = null,

@@ -4,7 +4,10 @@ import fr.bde_teknantes.lnb.quests.LnbQuests
 import fr.bde_teknantes.lnb.quests.Texts
 import fr.bde_teknantes.lnb.quests.api.ClaimBody
 import fr.bde_teknantes.lnb.quests.api.ClaimResult
+import fr.bde_teknantes.lnb.quests.api.Localized
+import fr.bde_teknantes.lnb.quests.api.PlayerView
 import fr.bde_teknantes.lnb.quests.api.Problems
+import fr.bde_teknantes.lnb.quests.api.QuestDef
 import fr.bde_teknantes.lnb.quests.api.QuestsApi
 import fr.bde_teknantes.lnb.quests.catalog.Catalog
 import fr.bde_teknantes.lnb.quests.community.CommunityQuest
@@ -17,13 +20,14 @@ import fr.bde_teknantes.lnb.quests.progress.QuestState
 import fr.bde_teknantes.lnb.warden.common.api.ApiClient
 import fr.bde_teknantes.lnb.warden.common.api.ApiResult
 import fr.bde_teknantes.lnb.warden.server.ServerConfig
+import java.util.UUID
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.neoforged.neoforge.network.PacketDistributor
 import net.neoforged.neoforge.network.handling.IPayloadContext
-import java.util.UUID
 
 /**
  * The quest screen, server side: builds what a player sees (the catalogue, their counters, the site's view of their
@@ -48,6 +52,19 @@ object QuestScreens {
 
     fun closed(uuid: UUID) = viewers.remove(uuid)
 
+    private val SECRET_NAME = Localized("???", "???")
+
+    /**
+     * A secret server quest stays "???" until someone takes first place: the site's flag, or the game hiding the
+     * advancement. Masked here, so the client never gets the name. Without the site's answer, it stays masked.
+     */
+    private fun secret(server: MinecraftServer, quest: QuestDef, view: PlayerView?): Boolean {
+        if (!quest.isServer) return false
+        val hidden = quest.hidden == true || quest.advancement?.let(ResourceLocation::tryParse)?.let(server.advancements::get)
+            ?.value()?.display()?.map { it.isHidden }?.orElse(false) == true
+        return hidden && view?.podiums?.get(quest.id).isNullOrEmpty() && view?.ranks?.containsKey(quest.id) != true
+    }
+
     private fun send(player: ServerPlayer, open: Boolean) {
         val server = player.server
         QuestsApi.player(player.uuid).thenAccept { result ->
@@ -61,7 +78,10 @@ object QuestScreens {
                 }
                 val data = ScreenData(
                     season = state.season,
-                    quests = Catalog.quests.map { quest -> quest.copy(items = quest.items?.map { it.copy(snbt = "") }, tiers = quest.tiers?.map { t -> t.copy(items = t.items?.map { it.copy(snbt = "") }) }) },
+                    quests = Catalog.quests.map { quest ->
+                        val shown = quest.copy(items = quest.items?.map { it.copy(snbt = "") }, tiers = quest.tiers?.map { t -> t.copy(items = t.items?.map { it.copy(snbt = "") }) })
+                        if (secret(server, quest, (result as? ApiResult.Ok)?.body)) shown.copy(name = SECRET_NAME, description = null, icon = "", hidden = true) else shown
+                    },
                     counters = state.player(player.uuid).counters.toMap(),
                     view = (result as? ApiResult.Ok)?.body,
                     problem = (result as? ApiResult.Http)?.problem ?: if (result is ApiResult.Network) "offline" else null,
