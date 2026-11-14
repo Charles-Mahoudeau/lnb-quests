@@ -71,6 +71,9 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
     private var selected: Pair<String, Int>? = null
     private var popup: String? = null
     private var scroll = 0
+
+    /** How far the current page scrolls, set as it draws; the wheel never goes past it. */
+    private var maxScroll = 0
     private val hits = ArrayList<Hit>()
 
     private var x0 = 0
@@ -191,6 +194,7 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         for (gy in canvasY + 8 until canvasY + canvasH - 4 step 12) {
             for (gx in canvasX + 8 until canvasX + canvasW - 4 step 12) graphics.fill(gx, gy, gx + 1, gy + 1, QuestUi.GRID)
         }
+        maxScroll = 0
         when (chapter) {
             RECORDS -> records(graphics)
             COMMUNITY -> community(graphics)
@@ -263,7 +267,7 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         }
         val top = canvasY + 22
         val bottom = canvasY + canvasH - 4
-        val maxScroll = maxOf(0, quests.size * CHAIN_ROW + 20 - (bottom - top))
+        maxScroll = maxOf(0, quests.size * CHAIN_ROW + 20 - (bottom - top))
         scroll = scroll.coerceIn(0, maxScroll)
         graphics.enableScissor(canvasX + 2, top, canvasX + areaW, bottom)
         quests.forEachIndexed { row, quest ->
@@ -366,11 +370,12 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         val perRow = maxOf(1, (canvasW - 40) / RECORD_STEP)
         val top = canvasY + 22
         val bottom = canvasY + canvasH - 4
-        var y = canvasY + 46 - scroll
         val byGroup = records.groupBy(::recordGroup)
         val groups = (GROUP_ORDER + byGroup.keys.filterNot(GROUP_ORDER::contains)).mapNotNull { key -> byGroup[key]?.let { key to it } }
         val contentHeight = groups.sumOf { (_, list) -> 18 + ((list.size + perRow - 1) / perRow) * RECORD_ROW }
-        scroll = scroll.coerceIn(0, maxOf(0, contentHeight + 30 - (bottom - top)))
+        maxScroll = maxOf(0, contentHeight + 30 - (bottom - top))
+        scroll = scroll.coerceIn(0, maxScroll)
+        var y = canvasY + 46 - scroll
         graphics.enableScissor(canvasX + 2, top, canvasX + canvasW - 2, bottom)
         for ((dim, list) in groups) {
             graphics.drawString(font, recordGroupTitle(dim), canvasX + 10, y - 24, QuestUi.IVORY, true)
@@ -600,7 +605,7 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
-        if (popup == null) scroll -= (scrollY * 12).toInt()
+        if (popup == null) scroll = (scroll - (scrollY * 12).toInt()).coerceIn(0, maxScroll)
         return true
     }
 
