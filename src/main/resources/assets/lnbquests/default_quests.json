@@ -85,6 +85,174 @@
       ]
     },
     {
+      "id": "mine_coal",
+      "family": "individual",
+      "category": "mining",
+      "name": {
+        "fr": "Charbonnier",
+        "en": "Coal miner"
+      },
+      "icon": "minecraft:coal_ore",
+      "objective": {
+        "type": "mine",
+        "target": "#c:ores/coal"
+      },
+      "tiers": [
+        {
+          "amount": 100,
+          "reward": 60
+        },
+        {
+          "amount": 1000,
+          "reward": 700
+        },
+        {
+          "amount": 5000,
+          "reward": 3000
+        }
+      ]
+    },
+    {
+      "id": "mine_iron",
+      "family": "individual",
+      "category": "mining",
+      "name": {
+        "fr": "Mineur de fer",
+        "en": "Iron miner"
+      },
+      "icon": "minecraft:iron_ore",
+      "objective": {
+        "type": "mine",
+        "target": "#c:ores/iron"
+      },
+      "tiers": [
+        {
+          "amount": 100,
+          "reward": 80
+        },
+        {
+          "amount": 1000,
+          "reward": 900
+        },
+        {
+          "amount": 5000,
+          "reward": 3800
+        }
+      ]
+    },
+    {
+      "id": "mine_zinc",
+      "family": "individual",
+      "category": "mining",
+      "name": {
+        "fr": "Mineur de zinc",
+        "en": "Zinc miner"
+      },
+      "icon": "create:zinc_ore",
+      "objective": {
+        "type": "mine",
+        "target": "#c:ores/zinc"
+      },
+      "tiers": [
+        {
+          "amount": 50,
+          "reward": 80
+        },
+        {
+          "amount": 500,
+          "reward": 900
+        },
+        {
+          "amount": 2500,
+          "reward": 3800
+        }
+      ]
+    },
+    {
+      "id": "mine_debris",
+      "family": "individual",
+      "category": "mining",
+      "name": {
+        "fr": "Débris antiques",
+        "en": "Ancient debris"
+      },
+      "icon": "minecraft:ancient_debris",
+      "objective": {
+        "type": "mine",
+        "target": "minecraft:ancient_debris"
+      },
+      "tiers": [
+        {
+          "amount": 4,
+          "reward": 150
+        },
+        {
+          "amount": 32,
+          "reward": 1400
+        },
+        {
+          "amount": 128,
+          "reward": 5000
+        }
+      ]
+    },
+    {
+      "id": "mine_quartz",
+      "family": "individual",
+      "category": "mining",
+      "name": {
+        "fr": "Mineur de quartz",
+        "en": "Quartz miner"
+      },
+      "icon": "minecraft:nether_quartz_ore",
+      "objective": {
+        "type": "mine",
+        "target": "#c:ores/quartz"
+      },
+      "tiers": [
+        {
+          "amount": 200,
+          "reward": 60
+        },
+        {
+          "amount": 2000,
+          "reward": 800
+        },
+        {
+          "amount": 10000,
+          "reward": 3500
+        }
+      ]
+    },
+    {
+      "id": "mine_logs",
+      "family": "individual",
+      "category": "mining",
+      "name": {
+        "fr": "Bûcheron",
+        "en": "Lumberjack"
+      },
+      "icon": "minecraft:oak_log",
+      "objective": {
+        "type": "mine",
+        "target": "#minecraft:logs"
+      },
+      "tiers": [
+        {
+          "amount": 500,
+          "reward": 50
+        },
+        {
+          "amount": 5000,
+          "reward": 700
+        },
+        {
+          "amount": 50000,
+          "reward": 3500
+        }
+      ]
+    },
+    {
       "id": "kill_zombie",
       "family": "individual",
       "category": "combat",
@@ -141,6 +309,174 @@
       ]
     },
     {
+      "id": "kill_skeleton",
+      "family": "individual",
+      "category": "combat",
+      "name": {
+        "fr": "Chasseur de squelettes",
+        "en": "Skeleton hunter"
+      },
+      "icon": "minecraft:skeleton_skull",
+      "objective": {
+        "type": "kill",
+        "target": "#minecraft:skeletons"
+      },
+      "tiers": [
+        {
+          "amount": 100,
+          "reward": 80
+        },
+        {
+          "amount": 1000,
+          "reward": 900
+        },
+        {
+          "amount": 10000,
+          "reward": 4000
+        }
+      ]
+    },
+    {
+      "id": "kill_creeper",
+      "family": "individual",
+      "category": "combat",
+      "name": {
+        "fr": "Démineur",
+        "en": "Creeper hunter"
+      },
+      "icon": "minecraft:creeper_head",
+      "objective": {
+        "type": "kill",
+        "target": "minecraft:creeper"
+      },
+      "tiers": [
+        {
+          "amount": 50,
+          "reward": 100
+        },
+        {
+          "amount": 500,
+          "reward": 1000
+        },
+        {
+          "amount": 5000,
+          "reward": 4500
+        }
+      ]
+    },
+    {
+      "id": "kill_raider",
+      "family": "individual",
+      "category": "combat",
+      "name": {
+        "fr": "Fléau des pillards",
+        "en": "Raider bane"
+      },
+      "icon": "minecraft:crossbow",
+      "objective": {
+        "type": "kill",
+        "target": "#minecraft:raiders"
+      },
+      "tiers": [
+        {
+          "amount": 25,
+          "reward": 150
+        },
+        {
+          "amount": 250,
+          "reward": 1300
+        },
+        {
+          "amount": 1500,
+          "reward": 5000
+        }
+      ]
+    },
+    {
+      "id": "kill_blaze",
+      "family": "individual",
+      "category": "combat",
+      "name": {
+        "fr": "Chasseur de blazes",
+        "en": "Blaze hunter"
+      },
+      "icon": "minecraft:blaze_rod",
+      "objective": {
+        "type": "kill",
+        "target": "minecraft:blaze"
+      },
+      "tiers": [
+        {
+          "amount": 50,
+          "reward": 120
+        },
+        {
+          "amount": 500,
+          "reward": 1100
+        },
+        {
+          "amount": 2500,
+          "reward": 4500
+        }
+      ]
+    },
+    {
+      "id": "kill_wither_skeleton",
+      "family": "individual",
+      "category": "combat",
+      "name": {
+        "fr": "Chasseur de wither squelettes",
+        "en": "Wither skeleton hunter"
+      },
+      "icon": "minecraft:wither_skeleton_skull",
+      "objective": {
+        "type": "kill",
+        "target": "minecraft:wither_skeleton"
+      },
+      "tiers": [
+        {
+          "amount": 25,
+          "reward": 150
+        },
+        {
+          "amount": 250,
+          "reward": 1300
+        },
+        {
+          "amount": 1000,
+          "reward": 5000
+        }
+      ]
+    },
+    {
+      "id": "kill_phantom",
+      "family": "individual",
+      "category": "combat",
+      "name": {
+        "fr": "Chasseur de phantoms",
+        "en": "Phantom hunter"
+      },
+      "icon": "minecraft:phantom_membrane",
+      "objective": {
+        "type": "kill",
+        "target": "minecraft:phantom"
+      },
+      "tiers": [
+        {
+          "amount": 10,
+          "reward": 100
+        },
+        {
+          "amount": 100,
+          "reward": 900
+        },
+        {
+          "amount": 500,
+          "reward": 3500
+        }
+      ]
+    },
+    {
       "id": "fish_any",
       "family": "individual",
       "category": "fishing",
@@ -168,6 +504,90 @@
       ]
     },
     {
+      "id": "fish_raw",
+      "family": "individual",
+      "category": "fishing",
+      "name": {
+        "fr": "Vrais poissons",
+        "en": "Real fish"
+      },
+      "icon": "minecraft:cod",
+      "objective": {
+        "type": "fish",
+        "target": "#c:foods/raw_fish"
+      },
+      "tiers": [
+        {
+          "amount": 50,
+          "reward": 80
+        },
+        {
+          "amount": 500,
+          "reward": 900
+        },
+        {
+          "amount": 2500,
+          "reward": 3800
+        }
+      ]
+    },
+    {
+      "id": "fish_pufferfish",
+      "family": "individual",
+      "category": "fishing",
+      "name": {
+        "fr": "Poissons-globes",
+        "en": "Pufferfish"
+      },
+      "icon": "minecraft:pufferfish",
+      "objective": {
+        "type": "fish",
+        "target": "minecraft:pufferfish"
+      },
+      "tiers": [
+        {
+          "amount": 10,
+          "reward": 100
+        },
+        {
+          "amount": 100,
+          "reward": 900
+        },
+        {
+          "amount": 500,
+          "reward": 3500
+        }
+      ]
+    },
+    {
+      "id": "cook_fish",
+      "family": "individual",
+      "category": "fishing",
+      "name": {
+        "fr": "Poissonnier",
+        "en": "Fishmonger"
+      },
+      "icon": "minecraft:cooked_salmon",
+      "objective": {
+        "type": "craft",
+        "target": "#c:foods/cooked_fish"
+      },
+      "tiers": [
+        {
+          "amount": 64,
+          "reward": 60
+        },
+        {
+          "amount": 640,
+          "reward": 700
+        },
+        {
+          "amount": 3200,
+          "reward": 3000
+        }
+      ]
+    },
+    {
       "id": "travel_far",
       "family": "individual",
       "category": "exploration",
@@ -191,6 +611,166 @@
         {
           "amount": 5000000,
           "reward": 4000
+        }
+      ]
+    },
+    {
+      "id": "loot_10",
+      "family": "individual",
+      "category": "exploration",
+      "name": {
+        "fr": "Pilleur novice",
+        "en": "Novice looter"
+      },
+      "icon": "minecraft:chest",
+      "objective": {
+        "type": "advancement",
+        "target": "lootr:10loot"
+      },
+      "tiers": [
+        {
+          "amount": 1,
+          "reward": 150
+        }
+      ]
+    },
+    {
+      "id": "loot_25",
+      "family": "individual",
+      "category": "exploration",
+      "name": {
+        "fr": "Pilleur confirmé",
+        "en": "Seasoned looter"
+      },
+      "icon": "minecraft:barrel",
+      "objective": {
+        "type": "advancement",
+        "target": "lootr:25loot"
+      },
+      "tiers": [
+        {
+          "amount": 1,
+          "reward": 400
+        }
+      ]
+    },
+    {
+      "id": "loot_50",
+      "family": "individual",
+      "category": "exploration",
+      "name": {
+        "fr": "Pilleur expert",
+        "en": "Expert looter"
+      },
+      "icon": "minecraft:gold_ingot",
+      "objective": {
+        "type": "advancement",
+        "target": "lootr:50loot"
+      },
+      "tiers": [
+        {
+          "amount": 1,
+          "reward": 900
+        }
+      ]
+    },
+    {
+      "id": "find_catacomb",
+      "family": "individual",
+      "category": "exploration",
+      "name": {
+        "fr": "Catacombes",
+        "en": "Catacombs"
+      },
+      "icon": "minecraft:zombie_head",
+      "objective": {
+        "type": "advancement",
+        "target": "betterdungeons:zombie_dungeon"
+      },
+      "tiers": [
+        {
+          "amount": 1,
+          "reward": 300
+        }
+      ]
+    },
+    {
+      "id": "find_skeleton_fortress",
+      "family": "individual",
+      "category": "exploration",
+      "name": {
+        "fr": "Forteresse des morts",
+        "en": "Fortress of the Undead"
+      },
+      "icon": "minecraft:bone",
+      "objective": {
+        "type": "advancement",
+        "target": "betterdungeons:skeleton_dungeon"
+      },
+      "tiers": [
+        {
+          "amount": 1,
+          "reward": 300
+        }
+      ]
+    },
+    {
+      "id": "find_desert_temple",
+      "family": "individual",
+      "category": "exploration",
+      "name": {
+        "fr": "Tombeau ancien",
+        "en": "Ancient tomb"
+      },
+      "icon": "minecraft:sandstone",
+      "objective": {
+        "type": "advancement",
+        "target": "betterdeserttemples:temple_entry"
+      },
+      "tiers": [
+        {
+          "amount": 1,
+          "reward": 400
+        }
+      ]
+    },
+    {
+      "id": "find_bastion",
+      "family": "individual",
+      "category": "exploration",
+      "name": {
+        "fr": "Bastion",
+        "en": "Bastion"
+      },
+      "icon": "minecraft:gilded_blackstone",
+      "objective": {
+        "type": "advancement",
+        "target": "minecraft:nether/find_bastion"
+      },
+      "tiers": [
+        {
+          "amount": 1,
+          "reward": 400
+        }
+      ]
+    },
+    {
+      "id": "end_crystal_crusher",
+      "family": "individual",
+      "category": "exploration",
+      "name": {
+        "fr": "Briseur de cristal",
+        "en": "Crystal crusher"
+      },
+      "icon": "minecraft:end_crystal",
+      "objective": {
+        "type": "advancement",
+        "target": "stellarity:end_city/crystal_crusher"
+      },
+      "tiers": [
+        {
+          "amount": 1,
+          "reward": 600
         }
       ]
     },
@@ -223,6 +803,146 @@
       ]
     },
     {
+      "id": "craft_bread",
+      "family": "individual",
+      "category": "crafting",
+      "name": {
+        "fr": "Boulanger",
+        "en": "Baker"
+      },
+      "icon": "minecraft:bread",
+      "objective": {
+        "type": "craft",
+        "target": "minecraft:bread"
+      },
+      "tiers": [
+        {
+          "amount": 64,
+          "reward": 60
+        },
+        {
+          "amount": 640,
+          "reward": 700
+        },
+        {
+          "amount": 3200,
+          "reward": 3000
+        }
+      ]
+    },
+    {
+      "id": "craft_hamburger",
+      "family": "individual",
+      "category": "crafting",
+      "name": {
+        "fr": "Burgers",
+        "en": "Burgers"
+      },
+      "icon": "farmersdelight:hamburger",
+      "objective": {
+        "type": "craft",
+        "target": "farmersdelight:hamburger"
+      },
+      "tiers": [
+        {
+          "amount": 16,
+          "reward": 80
+        },
+        {
+          "amount": 128,
+          "reward": 900
+        },
+        {
+          "amount": 512,
+          "reward": 3800
+        }
+      ]
+    },
+    {
+      "id": "craft_andesite_alloy",
+      "family": "individual",
+      "category": "crafting",
+      "name": {
+        "fr": "Alliage d'andésite",
+        "en": "Andesite alloy"
+      },
+      "icon": "create:andesite_alloy",
+      "objective": {
+        "type": "craft",
+        "target": "create:andesite_alloy"
+      },
+      "tiers": [
+        {
+          "amount": 64,
+          "reward": 70
+        },
+        {
+          "amount": 640,
+          "reward": 800
+        },
+        {
+          "amount": 3200,
+          "reward": 3500
+        }
+      ]
+    },
+    {
+      "id": "craft_glass",
+      "family": "individual",
+      "category": "crafting",
+      "name": {
+        "fr": "Verrier",
+        "en": "Glassmaker"
+      },
+      "icon": "minecraft:glass",
+      "objective": {
+        "type": "craft",
+        "target": "minecraft:glass"
+      },
+      "tiers": [
+        {
+          "amount": 256,
+          "reward": 50
+        },
+        {
+          "amount": 2560,
+          "reward": 700
+        },
+        {
+          "amount": 12800,
+          "reward": 3000
+        }
+      ]
+    },
+    {
+      "id": "craft_rail",
+      "family": "individual",
+      "category": "crafting",
+      "name": {
+        "fr": "Cheminot",
+        "en": "Railway worker"
+      },
+      "icon": "minecraft:rail",
+      "objective": {
+        "type": "craft",
+        "target": "minecraft:rail"
+      },
+      "tiers": [
+        {
+          "amount": 64,
+          "reward": 60
+        },
+        {
+          "amount": 640,
+          "reward": 700
+        },
+        {
+          "amount": 2560,
+          "reward": 3000
+        }
+      ]
+    },
+    {
       "id": "deliver_wool",
       "family": "individual",
       "category": "delivery",
@@ -247,6 +967,146 @@
         {
           "amount": 8192,
           "reward": 4200
+        }
+      ]
+    },
+    {
+      "id": "deliver_wheat",
+      "family": "individual",
+      "category": "delivery",
+      "name": {
+        "fr": "Livraison de blé",
+        "en": "Wheat delivery"
+      },
+      "icon": "minecraft:wheat",
+      "objective": {
+        "type": "deliver",
+        "target": "#c:crops/wheat"
+      },
+      "tiers": [
+        {
+          "amount": 512,
+          "reward": 80
+        },
+        {
+          "amount": 4096,
+          "reward": 1000
+        },
+        {
+          "amount": 16384,
+          "reward": 4000
+        }
+      ]
+    },
+    {
+      "id": "deliver_potato",
+      "family": "individual",
+      "category": "delivery",
+      "name": {
+        "fr": "Livraison de pommes de terre",
+        "en": "Potato delivery"
+      },
+      "icon": "minecraft:potato",
+      "objective": {
+        "type": "deliver",
+        "target": "#c:crops/potato"
+      },
+      "tiers": [
+        {
+          "amount": 512,
+          "reward": 70
+        },
+        {
+          "amount": 4096,
+          "reward": 900
+        },
+        {
+          "amount": 16384,
+          "reward": 3800
+        }
+      ]
+    },
+    {
+      "id": "deliver_sugar_cane",
+      "family": "individual",
+      "category": "delivery",
+      "name": {
+        "fr": "Livraison de canne à sucre",
+        "en": "Sugar cane delivery"
+      },
+      "icon": "minecraft:sugar_cane",
+      "objective": {
+        "type": "deliver",
+        "target": "minecraft:sugar_cane"
+      },
+      "tiers": [
+        {
+          "amount": 512,
+          "reward": 70
+        },
+        {
+          "amount": 4096,
+          "reward": 900
+        },
+        {
+          "amount": 16384,
+          "reward": 3800
+        }
+      ]
+    },
+    {
+      "id": "deliver_cobblestone",
+      "family": "individual",
+      "category": "delivery",
+      "name": {
+        "fr": "Livraison de pierre",
+        "en": "Cobblestone delivery"
+      },
+      "icon": "minecraft:cobblestone",
+      "objective": {
+        "type": "deliver",
+        "target": "#c:cobblestones"
+      },
+      "tiers": [
+        {
+          "amount": 2048,
+          "reward": 80
+        },
+        {
+          "amount": 16384,
+          "reward": 1000
+        },
+        {
+          "amount": 131072,
+          "reward": 4500
+        }
+      ]
+    },
+    {
+      "id": "deliver_iron",
+      "family": "individual",
+      "category": "delivery",
+      "name": {
+        "fr": "Livraison de fer",
+        "en": "Iron delivery"
+      },
+      "icon": "minecraft:iron_ingot",
+      "objective": {
+        "type": "deliver",
+        "target": "#c:ingots/iron"
+      },
+      "tiers": [
+        {
+          "amount": 128,
+          "reward": 100
+        },
+        {
+          "amount": 1024,
+          "reward": 1100
+        },
+        {
+          "amount": 4096,
+          "reward": 4500
         }
       ]
     },

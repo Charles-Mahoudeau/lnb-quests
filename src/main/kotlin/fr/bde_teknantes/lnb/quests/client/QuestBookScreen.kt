@@ -148,7 +148,10 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         val target = quest.objective.target
         val name: Component = when {
             target.isNullOrBlank() -> return Component.translatable("gui.lnbquests.objective.${quest.objective.type}.any", QuestUi.number(amount, language))
-            target.startsWith("#") -> QuestUi.stack(quest.icon).hoverName
+            target.startsWith("#") -> tagName(quest, target.substring(1))
+            quest.objective.type == "advancement" -> ResourceLocation.tryParse(target)?.let { id ->
+                Minecraft.getInstance().connection?.advancements?.get(id)?.value()?.display()?.map { it.title }?.orElse(null)
+            } ?: Component.literal(quest.name.get(language))
             else -> {
                 val id = ResourceLocation.tryParse(target)
                 when (quest.objective.type) {
@@ -211,8 +214,13 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
             val active = id == chapter
             val hovered = mouseX in sideX + 3 until sideX + SIDEBAR - 3 && mouseY in y until y + 18
             if (active || hovered) graphics.blitSprite(QuestUi.SECONDARY.get(true, true), sideX + 3, y, SIDEBAR - 6, 18)
-            graphics.renderFakeItem(icon, sideX + 6, y + 1)
-            graphics.drawString(font, name, sideX + 25, y + 5, if (active) QuestUi.IVORY else QuestUi.DIM, true)
+            // 12 px icons, so they stay inside the 18 px highlight with its frame.
+            graphics.pose().pushPose()
+            graphics.pose().translate((sideX + 7).toFloat(), (y + 3).toFloat(), 0f)
+            graphics.pose().scale(0.75f, 0.75f, 1f)
+            graphics.renderFakeItem(icon, 0, 0)
+            graphics.pose().popPose()
+            graphics.drawString(font, name, sideX + 23, y + 5, if (active) QuestUi.IVORY else QuestUi.DIM, true)
             if (count.isNotEmpty()) {
                 graphics.drawString(font, count, sideX + SIDEBAR - 7 - font.width(count), y + 5, if (active) QuestUi.GOLD_TEXT else QuestUi.MUTED, true)
             }
@@ -398,15 +406,11 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         graphics.disableScissor()
     }
 
-    /** A record's node; a secret one (masked by the server) shows a gold "?" instead of its item. */
+    /** A record's node; a secret one (masked by the server) shows a gold "?" sprite instead of its item. */
     private fun secretNode(graphics: GuiGraphics, x: Int, y: Int, quest: QuestDef, state: NodeState, glow: Boolean = true) {
         if (quest.hidden != true) return QuestUi.node(graphics, x, y, QuestUi.stack(quest.icon), state, 1, glow)
         QuestUi.node(graphics, x, y, ItemStack.EMPTY, state, 1, glow)
-        graphics.pose().pushPose()
-        graphics.pose().translate(x.toFloat(), y.toFloat(), 0f)
-        graphics.pose().scale(2f, 2f, 1f)
-        graphics.drawString(font, "?", -font.width("?") / 2 + 1, -3, QuestUi.GOLD_TEXT, true)
-        graphics.pose().popPose()
+        graphics.blitSprite(QuestUi.SECRET, x - 6, y - 6, 12, 12)
     }
 
     private fun recordPopup(graphics: GuiGraphics, quest: QuestDef) {
@@ -513,6 +517,18 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         graphics.blitSprite(QuestUi.PANEL_INSET, rx, py, canvasW - 148, canvasH - 124)
         graphics.drawString(font, Component.translatable("gui.lnbquests.community.contributors", community.contributors), rx + 6, py + 6, QuestUi.IVORY, true)
         graphics.drawWordWrap(font, Component.translatable("gui.lnbquests.community.site", community.topBonusPercent.toInt()), rx + 6, py + 18, canvasW - 160, QuestUi.DIM)
+    }
+
+    /** A tag's name, "Coal ores": its `tag.<registry>.<namespace>.<path>` translation, else the quest icon's name. */
+    private fun tagName(quest: QuestDef, tag: String): Component {
+        val registry = when (quest.objective.type) {
+            "kill" -> "entity_type"
+            "mine" -> "block"
+            else -> "item"
+        }
+        val path = tag.replace(':', '.').replace('/', '.')
+        return listOf("tag.$registry.$path", "tag.item.$path").firstOrNull(I18n::exists)?.let { Component.translatable(it) }
+            ?: QuestUi.stack(quest.icon).hoverName
     }
 
     private fun objectiveIcon(type: String) = when (type) {

@@ -127,5 +127,20 @@
   "gui.lnbquests.objective.deliver.any": "Livrer %s objets",
   "gui.lnbquests.objective.advancement.any": "Obtenir un achievement",
   "gui.lnbquests.open.unclaimed": "%s récompense(s) à réclamer",
-  "bossbar.lnbquests.flash": "%s : %s, %s, %s"
+  "bossbar.lnbquests.flash": "%s : %s, %s, %s",
+  "tag.block.c.ores.diamond": "Minerais de diamant",
+  "tag.block.c.ores.coal": "Minerais de charbon",
+  "tag.block.c.ores.iron": "Minerais de fer",
+  "tag.block.c.ores.zinc": "Minerais de zinc",
+  "tag.block.c.ores.quartz": "Minerais de quartz",
+  "tag.block.minecraft.logs": "Bûches",
+  "tag.entity_type.minecraft.skeletons": "Squelettes",
+  "tag.entity_type.minecraft.raiders": "Pillards",
+  "tag.item.c.foods.raw_fish": "Poissons crus",
+  "tag.item.c.foods.cooked_fish": "Poissons cuits",
+  "tag.item.minecraft.wool": "Laine",
+  "tag.item.c.crops.wheat": "Blé",
+  "tag.item.c.crops.potato": "Pommes de terre",
+  "tag.item.c.cobblestones": "Pierres taillées",
+  "tag.item.c.ingots.iron": "Lingots de fer"
 }

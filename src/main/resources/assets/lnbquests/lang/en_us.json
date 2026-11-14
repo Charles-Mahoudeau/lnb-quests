@@ -127,5 +127,20 @@
   "gui.lnbquests.objective.deliver.any": "Deliver %s items",
   "gui.lnbquests.objective.advancement.any": "Get an advancement",
   "gui.lnbquests.open.unclaimed": "%s reward(s) to claim",
-  "bossbar.lnbquests.flash": "%s: %s, %s, %s"
+  "bossbar.lnbquests.flash": "%s: %s, %s, %s",
+  "tag.block.c.ores.diamond": "Diamond ores",
+  "tag.block.c.ores.coal": "Coal ores",
+  "tag.block.c.ores.iron": "Iron ores",
+  "tag.block.c.ores.zinc": "Zinc ores",
+  "tag.block.c.ores.quartz": "Quartz ores",
+  "tag.block.minecraft.logs": "Logs",
+  "tag.entity_type.minecraft.skeletons": "Skeletons",
+  "tag.entity_type.minecraft.raiders": "Raiders",
+  "tag.item.c.foods.raw_fish": "Raw fish",
+  "tag.item.c.foods.cooked_fish": "Cooked fish",
+  "tag.item.minecraft.wool": "Wool",
+  "tag.item.c.crops.wheat": "Wheat",
+  "tag.item.c.crops.potato": "Potatoes",
+  "tag.item.c.cobblestones": "Cobblestone",
+  "tag.item.c.ingots.iron": "Iron ingots"
 }

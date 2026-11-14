@@ -25,6 +25,7 @@ object QuestUi {
     val SLOT = sprite("slot")
     val TEXT_FIELD = sprite("text_field")
     val PLAQUE_SIDE = sprite("plaque_side")
+    val SECRET = sprite("node/secret")
     val BRACKET_SIDE_TOP = sprite("bracket_side_top")
     val BRACKET_SIDE_BOTTOM = sprite("bracket_side_bottom")
     val FLASH_CLASP = sprite("flash_clasp")
