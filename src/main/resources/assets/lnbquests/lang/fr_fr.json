@@ -142,5 +142,15 @@
   "tag.item.c.crops.wheat": "Blé",
   "tag.item.c.crops.potato": "Pommes de terre",
   "tag.item.c.cobblestones": "Pierres taillées",
-  "tag.item.c.ingots.iron": "Lingots de fer"
+  "tag.item.c.ingots.iron": "Lingots de fer",
+  "gui.lnbquests.tab.daily": "Quotidiennes",
+  "gui.lnbquests.daily.none": "Aucune quête quotidienne aujourd’hui. De nouvelles sont tirées chaque jour à minuit.",
+  "gui.lnbquests.daily.ends": "Fin dans %s h %s",
+  "gui.lnbquests.daily.done": "Terminée",
+  "actionbar.lnbquests.daily": "Quotidienne, %s : %s / %s",
+  "chat.lnbquests.daily.done": "Quête du jour terminée : %s. Tu reçois %s.",
+  "toast.lnbquests.daily": "Quête du jour terminée",
+  "toast.lnbquests.daily.description": "%s : +%s LNBits",
+  "gui.lnbquests.advancement.todo": "À obtenir",
+  "gui.lnbquests.advancement.done": "Obtenu"
 }

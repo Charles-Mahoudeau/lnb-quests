@@ -14,4 +14,6 @@ object Problems {
     const val COMMUNITY_CLOSED = "communityClosed"
     const val IDEMPOTENCY_MISMATCH = "idempotencyMismatch"
     const val DISABLED = "disabled"
+    const val NOT_DRAWN = "notDrawn"
+    const val EXPIRED = "expired"
 }

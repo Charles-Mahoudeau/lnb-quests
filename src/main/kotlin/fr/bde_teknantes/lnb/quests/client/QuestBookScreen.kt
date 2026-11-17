@@ -1,7 +1,9 @@
 package fr.bde_teknantes.lnb.quests.client
 
+import fr.bde_teknantes.lnb.quests.api.CategoryDef
 import fr.bde_teknantes.lnb.quests.api.PlayerCompletion
 import fr.bde_teknantes.lnb.quests.api.QuestDef
+import fr.bde_teknantes.lnb.quests.api.SubcategoryDef
 import fr.bde_teknantes.lnb.quests.client.QuestUi.NodeState
 import fr.bde_teknantes.lnb.quests.network.ClaimPayload
 import fr.bde_teknantes.lnb.quests.network.ClosedQuestsPayload
@@ -21,10 +23,11 @@ import net.neoforged.neoforge.network.PacketDistributor
 import kotlin.math.roundToLong
 
 /**
- * The quest book, laid out like FTB Quests in LNB Economy's casino style: chapters on the left, the chapter's quests as
- * linked round nodes on a canvas, details of the chosen quest in a panel on the right. Records (server quests) are a
- * tree per dimension and open in a popup. Community and Flash have their own pages. The server sends its data
- * ([ScreenData]) when the book opens and after every tier, claim or delivery.
+ * The quest book, laid out like FTB Quests in LNB Economy's casino style: chapters (the site's individual categories)
+ * on the left, the chapter's quests as linked round nodes on a canvas under their subcategory headings, details of the
+ * chosen quest in a panel on the right. Records (server quests) are a tree per Records category and open in a popup.
+ * Daily, Community and Flash have their own pages. The server sends its data ([ScreenData]) when the book opens and
+ * after every tier, claim, daily quest or delivery.
  */
 class QuestBookScreen(private var data: ScreenData) : Screen(Component.translatable("gui.lnbquests.title")) {
     private companion object {
@@ -37,7 +40,7 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         const val CHAIN_ROW = 56
         const val RECORD_STEP = 34
 
-        /** Records groups shown first, in this order; other mods follow. */
+        /** Without categories from the site: Records groups shown first, in this order; other mods follow. */
         val GROUP_ORDER = listOf("overworld", "nether", "end", "create", "stellarity", "cooking", "exploration", "fishing")
 
         /** Mods gathered under a theme in Records. Stellarity stays on its own: it is the End's content. */
@@ -52,6 +55,14 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
             "tide" to "fishing",
         )
         const val RECORD_ROW = 44
+        const val HEADING = 14
+        const val SUB_HEADING = 12
+        const val DAILY_ROW = 48
+
+        /** Chapter rows sit closer than the pages', so six fit above the fixed pages. */
+        const val CHAPTER_ROW = 18
+
+        /** The chapters before the site sent categories. */
         val CATEGORIES = listOf("mining", "combat", "fishing", "exploration", "crafting", "delivery")
         val CATEGORY_ICONS = mapOf(
             "mining" to Items.DIAMOND_PICKAXE, "combat" to Items.IRON_SWORD, "fishing" to Items.FISHING_ROD,
@@ -60,17 +71,39 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         const val RECORDS = "records"
         const val COMMUNITY = "community"
         const val FLASH = "flash"
+        const val DAILY = "daily"
+
+        /**
+         * Quests grouped by subcategory, in the category's order: the ones without a known subcategory first (no
+         * heading), then each subcategory that has quests.
+         */
+        fun bySubcategory(quests: List<QuestDef>, subcategories: List<SubcategoryDef>): List<Pair<SubcategoryDef?, List<QuestDef>>> {
+            val known = subcategories.map { it.id }.toSet()
+            val groups = ArrayList<Pair<SubcategoryDef?, List<QuestDef>>>()
+            val loose = quests.filter { it.subcategory == null || it.subcategory !in known }
+            if (loose.isNotEmpty()) groups += null to loose
+            for (sub in subcategories) {
+                val list = quests.filter { it.subcategory == sub.id }
+                if (list.isNotEmpty()) groups += sub to list
+            }
+            return groups
+        }
     }
+
+    /** A chapter of the sidebar: an individual category. */
+    private class Chapter(val id: String, val name: Component, val icon: ItemStack, val subcategories: List<SubcategoryDef>)
 
     /** A clickable area, rebuilt every frame. */
     private class Hit(val x: Int, val y: Int, val w: Int, val h: Int, val tooltip: List<Component> = emptyList(), val action: (() -> Unit)? = null) {
         fun contains(mx: Double, my: Double) = mx >= x && mx < x + w && my >= y && my < y + h
     }
 
-    private var chapter = CATEGORIES.firstOrNull { c -> data.quests.any { it.isIndividual && it.category == c } } ?: RECORDS
+    private var chapter = chapters().firstOrNull()?.id ?: RECORDS
     private var selected: Pair<String, Int>? = null
     private var popup: String? = null
     private var scroll = 0
+    private var sideScroll = 0
+    private var sideMax = 0
 
     /** How far the current page scrolls, set as it draws; the wheel never goes past it. */
     private var maxScroll = 0
@@ -111,6 +144,48 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
     private fun individuals(category: String) = data.quests.filter { it.isIndividual && it.category == category }
     private val records get() = data.quests.filter { it.isServer }
 
+    /**
+     * The chapters with quests, in the site's order. Before the site sent categories, the six the book always had; a
+     * category the list doesn't know still gets a chapter, at the end, titled with its id.
+     */
+    private fun chapters(): List<Chapter> {
+        val defined = data.categories.filter { it.family == QuestDef.INDIVIDUAL }
+        val list = if (defined.isNotEmpty()) {
+            defined.map { Chapter(it.id, Component.literal(it.name.get(language)), QuestUi.stack(it.icon), it.subcategories.orEmpty()) }
+        } else {
+            CATEGORIES.map { Chapter(it, Component.translatable("gui.lnbquests.category.$it"), ItemStack(CATEGORY_ICONS[it] ?: Items.PAPER), emptyList()) }
+        }
+        val known = list.map { it.id }.toSet()
+        val extra = data.quests.mapNotNull { q -> q.category?.takeIf { q.isIndividual && it !in known } }.distinct()
+            .map { Chapter(it, Component.literal(it), ItemStack(Items.PAPER), emptyList()) }
+        return (list + extra).filter { individuals(it.id).isNotEmpty() }
+    }
+
+    /**
+     * The title and description of the advancement a quest is about: from the server, which knows them all, else from
+     * the advancements the client was shown. Null for a secret one, or a quest without an advancement.
+     */
+    private fun advancementText(quest: QuestDef): Pair<Component, Component>? {
+        val registries = Minecraft.getInstance().connection?.registryAccess() ?: return null
+        data.advancements[quest.id]?.let { text ->
+            return runCatching {
+                (Component.Serializer.fromJson(text.title, registries) ?: Component.empty()) to
+                    (Component.Serializer.fromJson(text.description, registries) ?: Component.empty())
+            }.getOrNull()
+        }
+        if (quest.hidden == true) return null
+        val id = (if (quest.isServer) quest.advancement else quest.objective.target.takeIf { quest.objective.type == "advancement" })
+            ?.let(ResourceLocation::tryParse) ?: return null
+        val display = Minecraft.getInstance().connection?.advancements?.get(id)?.value()?.display()?.orElse(null) ?: return null
+        return display.title to display.description
+    }
+
+    /** [text] cut into lines of [width], at most [max], in [color]: for tooltips. */
+    private fun tipLines(text: Component, width: Int, max: Int, color: Int): List<Component> =
+        font.splitter.splitLines(text, width, net.minecraft.network.chat.Style.EMPTY).take(max).map { Component.literal(it.string).withColor(color) }
+
+    private fun serverCategory(id: String): CategoryDef? = data.categories.firstOrNull { it.family == QuestDef.SERVER && it.id == id }
+
     private fun completion(quest: String, tier: Int): PlayerCompletion? =
         data.view?.completions?.firstOrNull { it.quest == quest && it.tier == tier }
 
@@ -126,10 +201,12 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
     private fun estimate(base: Double): Long = (base * data.kGlobal * kPlayer).roundToLong()
 
     /**
-     * The Records group of a server quest: vanilla advancements by dimension, modded ones by mod, with a few mods
-     * gathered under one theme. A mod without a theme gets its own group, titled with its name.
+     * The Records group of a server quest: its category, else a guess from its advancement: vanilla advancements by
+     * dimension, modded ones by mod, with a few mods gathered under one theme. A mod without a theme gets its own
+     * group, titled with its name.
      */
     private fun recordGroup(quest: QuestDef): String {
+        quest.category?.let { return it }
         val id = quest.advancement?.let(ResourceLocation::tryParse) ?: return "overworld"
         if (id.namespace != "minecraft") return MOD_GROUPS[id.namespace] ?: id.namespace
         return when {
@@ -140,6 +217,7 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
     }
 
     private fun recordGroupTitle(group: String): Component {
+        serverCategory(group)?.let { return Component.literal(it.name.get(language)) }
         val key = "gui.lnbquests.group.$group"
         if (I18n.exists(key)) return Component.translatable(key)
         val name = ModList.get().getModContainerById(group).map { it.modInfo.displayName }.orElse(group)
@@ -182,6 +260,10 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         val right: Component = when {
             chapter == FLASH && data.flash == null && data.nextFlashAt > now ->
                 Component.translatable("gui.lnbquests.flash.next", ((data.nextFlashAt - now) / 60_000).coerceAtLeast(1))
+            chapter == DAILY && data.daily.endsAt > now -> {
+                val left = (data.daily.endsAt - now) / 60_000
+                Component.translatable("gui.lnbquests.daily.ends", left / 60, left % 60)
+            }
             chapter == COMMUNITY && data.community != null -> runCatching {
                 val left = java.time.Duration.between(java.time.Instant.now(), java.time.Instant.parse(data.community!!.endsAt))
                 Component.translatable("gui.lnbquests.community.ends", left.toDays(), left.toHours() % 24)
@@ -197,6 +279,7 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         maxScroll = 0
         when (chapter) {
             RECORDS -> records(graphics)
+            DAILY -> daily(graphics)
             COMMUNITY -> community(graphics)
             FLASH -> flash(graphics)
             else -> category(graphics, chapter)
@@ -213,10 +296,18 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
 
     private fun sidebar(graphics: GuiGraphics, mouseX: Int, mouseY: Int) {
         graphics.blitSprite(QuestUi.PANEL_INSET, sideX, sideY, SIDEBAR, H - 32)
-        var y = sideY + 4
-        fun entry(id: String, icon: ItemStack, name: Component, count: String) {
+        val chapters = chapters()
+        // The chapters fill the space above the fixed pages and scroll with the wheel; the pages below don't.
+        val top = sideY + 3
+        val bottom = chapterBottom
+        sideMax = maxOf(0, chapters.size * CHAPTER_ROW - (bottom - top))
+        sideScroll = sideScroll.coerceIn(0, sideMax)
+        graphics.enableScissor(sideX + 2, top, sideX + SIDEBAR - 2, bottom)
+        var y = top - sideScroll
+        fun entry(id: String, icon: ItemStack, name: Component, count: String, clipTop: Int, clipBottom: Int, step: Int = ROW) {
             val active = id == chapter
-            val hovered = mouseX in sideX + 3 until sideX + SIDEBAR - 3 && mouseY in y until y + 18
+            val visible = y + 18 > clipTop && y < clipBottom
+            val hovered = visible && mouseX in sideX + 3 until sideX + SIDEBAR - 3 && mouseY in maxOf(y, clipTop) until minOf(y + 18, clipBottom)
             if (active || hovered) graphics.blitSprite(QuestUi.SECONDARY.get(true, true), sideX + 3, y, SIDEBAR - 6, 18)
             // 12 px icons, so they stay inside the 18 px highlight with its frame.
             graphics.pose().pushPose()
@@ -224,27 +315,47 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
             graphics.pose().scale(0.75f, 0.75f, 1f)
             graphics.renderFakeItem(icon, 0, 0)
             graphics.pose().popPose()
-            graphics.drawString(font, name, sideX + 23, y + 5, if (active) QuestUi.IVORY else QuestUi.DIM, true)
+            val countWidth = if (count.isEmpty()) 0 else font.width(count) + 4
+            graphics.drawString(font, QuestUi.fit(font, name.string, SIDEBAR - 30 - countWidth), sideX + 23, y + 5, if (active) QuestUi.IVORY else QuestUi.DIM, true)
             if (count.isNotEmpty()) {
                 graphics.drawString(font, count, sideX + SIDEBAR - 7 - font.width(count), y + 5, if (active) QuestUi.GOLD_TEXT else QuestUi.MUTED, true)
             }
-            val top = y
-            hits += Hit(sideX + 3, top, SIDEBAR - 6, 18) { chapter = id; selected = null; scroll = 0 }
-            y += ROW
+            if (visible) {
+                hits += Hit(sideX + 3, maxOf(y, clipTop), SIDEBAR - 6, minOf(y + 18, clipBottom) - maxOf(y, clipTop)) { chapter = id; selected = null; scroll = 0 }
+            }
+            y += step
         }
-        for (c in CATEGORIES) {
-            val quests = individuals(c)
-            if (quests.isEmpty()) continue
+        for (c in chapters) {
+            val quests = individuals(c.id)
             val total = quests.sumOf { it.tiers.orEmpty().size }
             val done = quests.sumOf { q -> data.view?.completions?.count { it.quest == q.id } ?: 0 }
-            entry(c, ItemStack(CATEGORY_ICONS[c] ?: Items.PAPER), Component.translatable("gui.lnbquests.category.$c"), "$done/$total")
+            entry(c.id, c.icon, c.name, "$done/$total", top, bottom, CHAPTER_ROW)
         }
-        graphics.fill(sideX + 6, y + 2, sideX + SIDEBAR - 6, y + 3, QuestUi.GOLD_DK)
-        y += 6
-        entry(RECORDS, ItemStack(Items.NETHER_STAR), Component.translatable("gui.lnbquests.tab.server"), "${data.view?.ranks?.size ?: 0}/${records.size}")
-        entry(COMMUNITY, ItemStack(Items.BELL), Component.translatable("gui.lnbquests.tab.community"), "")
-        entry(FLASH, ItemStack(Items.CLOCK), Component.translatable("gui.lnbquests.tab.flash"), "")
+        graphics.disableScissor()
+        if (sideMax > 0) {
+            // A thin gold thumb on the right edge shows where the list is.
+            val track = bottom - top
+            val thumb = maxOf(8, track * track / (track + sideMax))
+            val ty = top + (track - thumb) * sideScroll / sideMax
+            graphics.fill(sideX + SIDEBAR - 3, top, sideX + SIDEBAR - 2, bottom, QuestUi.GOLD_DK)
+            graphics.fill(sideX + SIDEBAR - 3, ty, sideX + SIDEBAR - 2, ty + thumb, QuestUi.GOLD_LT)
+        }
+        // The fixed pages sit at the foot of the sidebar, leaving some room under the chapters.
+        val end = sideY + H - 36
+        y = pagesTop
+        graphics.fill(sideX + 6, y - 4, sideX + SIDEBAR - 6, y - 3, QuestUi.GOLD_DK)
+        val daily = data.daily.lines
+        entry(DAILY, ItemStack(Items.SUNFLOWER), Component.translatable("gui.lnbquests.tab.daily"), if (daily.isEmpty()) "" else "${daily.count { it.done }}/${daily.size}", y, end)
+        entry(RECORDS, ItemStack(Items.NETHER_STAR), Component.translatable("gui.lnbquests.tab.server"), "${data.view?.ranks?.size ?: 0}/${records.size}", bottom, end)
+        entry(COMMUNITY, ItemStack(Items.BELL), Component.translatable("gui.lnbquests.tab.community"), "", bottom, end)
+        entry(FLASH, ItemStack(Items.CLOCK), Component.translatable("gui.lnbquests.tab.flash"), "", bottom, end)
     }
+
+    /** Where the fixed pages start, at the foot of the sidebar. */
+    private val pagesTop get() = sideY + H - 36 - 4 * ROW - 2
+
+    /** Where the scrolling chapter list ends: just above the gold rule over the fixed pages (six rows). */
+    private val chapterBottom get() = pagesTop - 5
 
     private fun heading(graphics: GuiGraphics, text: Component, progress: String, width: Int) {
         QuestUi.title(graphics, font, text, canvasX + 8, canvasY + 6)
@@ -252,14 +363,16 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         graphics.fill(canvasX + 6, canvasY + 17, canvasX + width - 6, canvasY + 18, QuestUi.GOLD_DK)
     }
 
-    // A category: chains of tiers, and the chosen tier in the panel on the right.
+    // A category: chains of tiers under their subcategory headings, and the chosen tier in the panel on the right.
 
     private fun category(graphics: GuiGraphics, category: String) {
+        val current = chapters().firstOrNull { it.id == category }
         val quests = individuals(category)
+        val groups = bySubcategory(quests, current?.subcategories.orEmpty())
         val total = quests.sumOf { it.tiers.orEmpty().size }
         val done = quests.sumOf { q -> data.view?.completions?.count { it.quest == q.id } ?: 0 }
         val areaW = canvasW - PANEL - 3
-        heading(graphics, Component.translatable("gui.lnbquests.category.$category"), "$done / $total", areaW)
+        heading(graphics, current?.name ?: Component.literal(category), "$done / $total", areaW)
         if (selected == null || quests.none { it.id == selected?.first }) {
             selected = quests.firstNotNullOfOrNull { q ->
                 q.tiers.orEmpty().indices.firstOrNull { tierState(q, it + 1) in setOf(NodeState.READY, NodeState.PROGRESS) }?.let { q.id to it + 1 }
@@ -267,47 +380,65 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         }
         val top = canvasY + 22
         val bottom = canvasY + canvasH - 4
-        maxScroll = maxOf(0, quests.size * CHAIN_ROW + 20 - (bottom - top))
+        val height = groups.sumOf { (sub, list) -> (if (sub != null) HEADING else 0) + list.size * CHAIN_ROW }
+        maxScroll = maxOf(0, height + 20 - (bottom - top))
         scroll = scroll.coerceIn(0, maxScroll)
         graphics.enableScissor(canvasX + 2, top, canvasX + areaW, bottom)
-        quests.forEachIndexed { row, quest ->
-            val y = canvasY + 52 + row * CHAIN_ROW - scroll
-            val ox = canvasX + 34
-            graphics.drawString(font, quest.name.get(language), ox - 12, y - 27, QuestUi.IVORY, true)
-            val tiers = quest.tiers.orEmpty()
-            for (i in 0 until tiers.size - 1) {
-                val from = tierState(quest, i + 1)
-                val to = tierState(quest, i + 2)
-                val color = when {
-                    from == NodeState.LOCKED || from == NodeState.PROGRESS -> QuestUi.LOCKED_LINK
-                    to == NodeState.LOCKED -> QuestUi.GOLD_MD
-                    else -> QuestUi.GOLD_LT
-                }
-                QuestUi.link(graphics, ox + i * CHAIN_STEP + QuestUi.RING / 2 + 1, ox + (i + 1) * CHAIN_STEP - QuestUi.RING / 2 - 1, y, color)
+        var cursor = 0
+        for ((sub, list) in groups) {
+            if (sub != null) {
+                val hy = canvasY + 26 + cursor - scroll
+                val name = Component.literal(sub.name.get(language))
+                graphics.drawString(font, name, canvasX + 10, hy, QuestUi.GOLD_TEXT, true)
+                graphics.fill(canvasX + 14 + font.width(name), hy + 4, canvasX + areaW - 8, hy + 5, QuestUi.GOLD_DK)
+                cursor += HEADING
             }
-            tiers.forEachIndexed { i, tier ->
-                val x = ox + i * CHAIN_STEP
-                val state = tierState(quest, i + 1)
-                QuestUi.node(graphics, x, y, QuestUi.stack(quest.icon), state, i + 1)
-                if (state == NodeState.PROGRESS) {
-                    val counter = data.counters[quest.id] ?: 0
-                    QuestUi.bar(graphics, x - 10, y + QuestUi.RING / 2 + 4, 20, 2, counter.toDouble() / tier.amount)
-                }
-                if (selected == quest.id to i + 1) graphics.renderOutline(x - 15, y - 15, 30, 30, QuestUi.GOLD_HI)
-                if (y in top..bottom) {
-                    val counter = minOf(data.counters[quest.id] ?: 0, tier.amount)
-                    val tip = listOf<Component>(
-                        Component.translatable("gui.lnbquests.tier_of", quest.name.get(language), i + 1),
-                        Component.literal("${QuestUi.number(counter, language)} / ${QuestUi.number(tier.amount, language)}").withColor(QuestUi.DIM),
-                        QuestUi.amount(completion(quest.id, i + 1)?.amount ?: estimate(tier.reward), language, completion(quest.id, i + 1) == null).withColor(QuestUi.GOLD_TEXT),
-                    )
-                    hits += Hit(x - 13, y - 13, 26, 26, tip) { selected = quest.id to i + 1 }
-                }
+            for (quest in list) {
+                chain(graphics, quest, canvasY + 52 + cursor - scroll, top, bottom)
+                cursor += CHAIN_ROW
             }
         }
         graphics.disableScissor()
         if (quests.isEmpty()) graphics.drawString(font, Component.translatable("gui.lnbquests.empty"), canvasX + 10, canvasY + 26, QuestUi.MUTED, true)
         selected?.let { (id, tier) -> quests.firstOrNull { it.id == id }?.let { tierPanel(graphics, it, tier) } }
+    }
+
+    /** One quest's chain of tiers, its nodes on the line [y]. */
+    private fun chain(graphics: GuiGraphics, quest: QuestDef, y: Int, top: Int, bottom: Int) {
+        val ox = canvasX + 34
+        graphics.drawString(font, quest.name.get(language), ox - 12, y - 27, QuestUi.IVORY, true)
+        val tiers = quest.tiers.orEmpty()
+        for (i in 0 until tiers.size - 1) {
+            val from = tierState(quest, i + 1)
+            val to = tierState(quest, i + 2)
+            val color = when {
+                from == NodeState.LOCKED || from == NodeState.PROGRESS -> QuestUi.LOCKED_LINK
+                to == NodeState.LOCKED -> QuestUi.GOLD_MD
+                else -> QuestUi.GOLD_LT
+            }
+            QuestUi.link(graphics, ox + i * CHAIN_STEP + QuestUi.RING / 2 + 1, ox + (i + 1) * CHAIN_STEP - QuestUi.RING / 2 - 1, y, color)
+        }
+        tiers.forEachIndexed { i, tier ->
+            val x = ox + i * CHAIN_STEP
+            val state = tierState(quest, i + 1)
+            QuestUi.node(graphics, x, y, QuestUi.stack(quest.icon), state, i + 1)
+            if (state == NodeState.PROGRESS) {
+                val counter = data.counters[quest.id] ?: 0
+                QuestUi.bar(graphics, x - 10, y + QuestUi.RING / 2 + 4, 20, 2, counter.toDouble() / tier.amount)
+            }
+            if (selected == quest.id to i + 1) graphics.renderOutline(x - 15, y - 15, 30, 30, QuestUi.GOLD_HI)
+            if (y in top..bottom) {
+                val counter = minOf(data.counters[quest.id] ?: 0, tier.amount)
+                // An advancement quest: its description says more than a 0 / 1 counter.
+                val middle = advancementText(quest)?.takeIf { quest.objective.type == "advancement" }
+                    ?.let { tipLines(it.second, 150, 3, QuestUi.DIM) }
+                    ?: listOf(Component.literal("${QuestUi.number(counter, language)} / ${QuestUi.number(tier.amount, language)}").withColor(QuestUi.DIM))
+                val tip = listOf<Component>(Component.translatable("gui.lnbquests.tier_of", quest.name.get(language), i + 1)) + middle + listOf(
+                    QuestUi.amount(completion(quest.id, i + 1)?.amount ?: estimate(tier.reward), language, completion(quest.id, i + 1) == null).withColor(QuestUi.GOLD_TEXT),
+                )
+                hits += Hit(x - 13, y - 13, 26, 26, tip) { selected = quest.id to i + 1 }
+            }
+        }
     }
 
     private fun tierPanel(graphics: GuiGraphics, quest: QuestDef, tier: Int) {
@@ -321,15 +452,27 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         val state = tierState(quest, tier)
         QuestUi.node(graphics, dx + pad + 14, dy + pad + 16, QuestUi.stack(quest.icon), state, tier, glow = false)
         QuestUi.title(graphics, font, Component.literal(QuestUi.fit(font, quest.name.get(language), inner - 33)), dx + pad + 33, dy + pad + 6)
-        graphics.drawString(font, Component.translatable("gui.lnbquests.tier_short", tier, tiers.size), dx + pad + 33, dy + pad + 17, QuestUi.DIM, true)
-        graphics.fill(dx + pad, dy + 50, dx + PANEL - pad, dy + 51, QuestUi.GOLD_DK)
-        val lines = font.split(objective(quest, def.amount), inner).take(2)
-        lines.forEachIndexed { i, line -> graphics.drawString(font, line, dx + pad, dy + 56 + i * 10, QuestUi.IVORY, true) }
         val counter = minOf(data.counters[quest.id] ?: 0, def.amount)
         val reached = completion(quest.id, tier) != null
-        QuestUi.bar(graphics, dx + pad, dy + 79, inner, 3, if (reached) 1.0 else counter.toDouble() / def.amount)
-        val shown = if (reached) def.amount else counter
-        graphics.drawString(font, "${QuestUi.number(shown, language)} / ${QuestUi.number(def.amount, language)}", dx + pad, dy + 86, if (reached) QuestUi.GREEN else QuestUi.DIM, true)
+        val advancement = advancementText(quest)?.takeIf { quest.objective.type == "advancement" && tiers.size == 1 }
+        if (advancement != null) {
+            // An advancement: its status instead of "Tier 1/1", its title and description instead of a 0 / 1 bar.
+            val got = reached || counter >= def.amount
+            graphics.drawString(font, Component.translatable(if (got) "gui.lnbquests.advancement.done" else "gui.lnbquests.advancement.todo"), dx + pad + 33, dy + pad + 17, if (got) QuestUi.GREEN else QuestUi.DIM, true)
+            graphics.fill(dx + pad, dy + 50, dx + PANEL - pad, dy + 51, QuestUi.GOLD_DK)
+            val title = font.split(advancement.first, inner).take(2)
+            val description = font.split(advancement.second, inner).take(4 - title.size)
+            title.forEachIndexed { i, line -> graphics.drawString(font, line, dx + pad, dy + 56 + i * 10, QuestUi.IVORY, true) }
+            description.forEachIndexed { i, line -> graphics.drawString(font, line, dx + pad, dy + 56 + (title.size + i) * 10, QuestUi.DIM, true) }
+        } else {
+            graphics.drawString(font, Component.translatable("gui.lnbquests.tier_short", tier, tiers.size), dx + pad + 33, dy + pad + 17, QuestUi.DIM, true)
+            graphics.fill(dx + pad, dy + 50, dx + PANEL - pad, dy + 51, QuestUi.GOLD_DK)
+            val lines = font.split(objective(quest, def.amount), inner).take(2)
+            lines.forEachIndexed { i, line -> graphics.drawString(font, line, dx + pad, dy + 56 + i * 10, QuestUi.IVORY, true) }
+            QuestUi.bar(graphics, dx + pad, dy + 79, inner, 3, if (reached) 1.0 else counter.toDouble() / def.amount)
+            val shown = if (reached) def.amount else counter
+            graphics.drawString(font, "${QuestUi.number(shown, language)} / ${QuestUi.number(def.amount, language)}", dx + pad, dy + 86, if (reached) QuestUi.GREEN else QuestUi.DIM, true)
+        }
         graphics.fill(dx + pad, dy + 99, dx + PANEL - pad, dy + 100, QuestUi.GOLD_DK)
         graphics.drawString(font, Component.translatable("gui.lnbquests.reward"), dx + pad, dy + 105, QuestUi.IVORY, true)
         val done = completion(quest.id, tier)
@@ -363,7 +506,7 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         }
     }
 
-    // Records: one tree per dimension or mod, nodes opening a popup with the podium.
+    // Records: one tree per Records category (or guessed group), nodes opening a popup with the podium.
 
     private fun records(graphics: GuiGraphics) {
         heading(graphics, Component.translatable("gui.lnbquests.tab.server"), "${data.view?.ranks?.size ?: 0} / ${records.size}", canvasW)
@@ -371,42 +514,94 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         val top = canvasY + 22
         val bottom = canvasY + canvasH - 4
         val byGroup = records.groupBy(::recordGroup)
-        val groups = (GROUP_ORDER + byGroup.keys.filterNot(GROUP_ORDER::contains)).mapNotNull { key -> byGroup[key]?.let { key to it } }
-        val contentHeight = groups.sumOf { (_, list) -> 18 + ((list.size + perRow - 1) / perRow) * RECORD_ROW }
+        val order = data.categories.filter { it.family == QuestDef.SERVER }.map { it.id }.ifEmpty { GROUP_ORDER }
+        val groups = (order + byGroup.keys.filterNot(order::contains)).mapNotNull { key ->
+            byGroup[key]?.let { key to bySubcategory(it, serverCategory(key)?.subcategories.orEmpty()) }
+        }
+        val contentHeight = groups.sumOf { (_, subs) ->
+            18 + subs.sumOf { (sub, list) -> (if (sub != null) SUB_HEADING else 0) + ((list.size + perRow - 1) / perRow) * RECORD_ROW }
+        }
         maxScroll = maxOf(0, contentHeight + 30 - (bottom - top))
         scroll = scroll.coerceIn(0, maxScroll)
         var y = canvasY + 46 - scroll
         graphics.enableScissor(canvasX + 2, top, canvasX + canvasW - 2, bottom)
-        for ((dim, list) in groups) {
-            graphics.drawString(font, recordGroupTitle(dim), canvasX + 10, y - 24, QuestUi.IVORY, true)
-            list.chunked(perRow).forEach { row ->
-                row.forEachIndexed { i, quest ->
-                    val x = canvasX + 26 + i * RECORD_STEP
-                    if (i > 0) {
-                        val previous = row[i - 1]
-                        val color = if (data.view?.ranks?.containsKey(previous.id) == true) QuestUi.GOLD_LT else QuestUi.LOCKED_LINK
-                        QuestUi.link(graphics, x - RECORD_STEP + QuestUi.RING / 2 + 1, x - QuestUi.RING / 2 - 1, y, color)
-                    }
+        for ((group, subs) in groups) {
+            graphics.drawString(font, recordGroupTitle(group), canvasX + 10, y - 24, QuestUi.IVORY, true)
+            for ((sub, list) in subs) {
+                if (sub != null) {
+                    y += SUB_HEADING
+                    graphics.drawString(font, Component.literal(sub.name.get(language)), canvasX + 16, y - 24, QuestUi.GOLD_TEXT, true)
                 }
-                row.forEachIndexed { i, quest ->
-                    val x = canvasX + 26 + i * RECORD_STEP
-                    val rank = data.view?.ranks?.get(quest.id)
-                    val podium = data.view?.podiums?.get(quest.id).orEmpty()
-                    val state = when {
-                        rank != null -> NodeState.CLAIMED
-                        podium.size >= (quest.ranks?.size ?: 3) -> NodeState.LOCKED
-                        else -> NodeState.PROGRESS
-                    }
-                    secretNode(graphics, x, y, quest, state)
-                    if (y in top..bottom) {
-                        val tip = mutableListOf<Component>(Component.literal(quest.name.get(language)))
-                        podium.take(3).forEach { tip += Component.literal("${it.rank}. ${it.username}").withColor(if (it.rank == rank) QuestUi.GOLD_TEXT else QuestUi.DIM) }
-                        hits += Hit(x - 13, y - 13, 26, 26, tip) { popup = quest.id }
-                    }
+                list.chunked(perRow).forEach { row ->
+                    recordRow(graphics, row, y, top, bottom)
+                    y += RECORD_ROW
                 }
-                y += RECORD_ROW
             }
             y += 18
+        }
+        graphics.disableScissor()
+    }
+
+    private fun recordRow(graphics: GuiGraphics, row: List<QuestDef>, y: Int, top: Int, bottom: Int) {
+        row.forEachIndexed { i, _ ->
+            val x = canvasX + 26 + i * RECORD_STEP
+            if (i > 0) {
+                val previous = row[i - 1]
+                val color = if (data.view?.ranks?.containsKey(previous.id) == true) QuestUi.GOLD_LT else QuestUi.LOCKED_LINK
+                QuestUi.link(graphics, x - RECORD_STEP + QuestUi.RING / 2 + 1, x - QuestUi.RING / 2 - 1, y, color)
+            }
+        }
+        row.forEachIndexed { i, quest ->
+            val x = canvasX + 26 + i * RECORD_STEP
+            val rank = data.view?.ranks?.get(quest.id)
+            val podium = data.view?.podiums?.get(quest.id).orEmpty()
+            val state = when {
+                rank != null -> NodeState.CLAIMED
+                podium.size >= (quest.ranks?.size ?: 3) -> NodeState.LOCKED
+                else -> NodeState.PROGRESS
+            }
+            secretNode(graphics, x, y, quest, state)
+            if (y in top..bottom) {
+                val tip = mutableListOf<Component>(Component.literal(quest.name.get(language)))
+                advancementText(quest)?.let { tip += tipLines(it.second, 150, 3, QuestUi.DIM) }
+                podium.take(3).forEach { tip += Component.literal("${it.rank}. ${it.username}").withColor(if (it.rank == rank) QuestUi.GOLD_TEXT else QuestUi.DIM) }
+                hits += Hit(x - 13, y - 13, 26, 26, tip) { popup = quest.id }
+            }
+        }
+    }
+
+    // Daily: today's quests, the same for everyone, each with the player's progress.
+
+    private fun daily(graphics: GuiGraphics) {
+        val lines = data.daily.lines
+        heading(graphics, Component.translatable("gui.lnbquests.tab.daily"), "${lines.count { it.done }} / ${lines.size}", canvasW)
+        if (lines.isEmpty()) {
+            graphics.drawWordWrap(font, Component.translatable("gui.lnbquests.daily.none"), canvasX + 10, canvasY + 26, canvasW - 20, QuestUi.MUTED)
+            return
+        }
+        val top = canvasY + 22
+        val bottom = canvasY + canvasH - 4
+        maxScroll = maxOf(0, lines.size * DAILY_ROW + 4 - (bottom - top))
+        scroll = scroll.coerceIn(0, maxScroll)
+        graphics.enableScissor(canvasX + 2, top, canvasX + canvasW - 2, bottom)
+        lines.forEachIndexed { i, line ->
+            val quest = data.quests.firstOrNull { it.id == line.quest } ?: return@forEachIndexed
+            val y = top + 2 + i * DAILY_ROW - scroll
+            graphics.blitSprite(QuestUi.PANEL, canvasX + 6, y, canvasW - 12, DAILY_ROW - 4)
+            QuestUi.node(graphics, canvasX + 28, y + 22, QuestUi.stack(quest.icon), if (line.done) NodeState.CLAIMED else NodeState.PROGRESS, 1, glow = false)
+            val reward: Component = if (line.done) {
+                Component.translatable("gui.lnbquests.daily.done").withColor(QuestUi.GREEN)
+            } else {
+                QuestUi.amount(estimate((quest.rewardPerUnit ?: 0.0) * line.quantity), language, true).withColor(QuestUi.GOLD_TEXT)
+            }
+            val right = canvasX + canvasW - 16
+            graphics.drawString(font, reward, right - font.width(reward), y + 9, QuestUi.GOLD_TEXT, true)
+            QuestUi.title(graphics, font, Component.literal(QuestUi.fit(font, quest.name.get(language), right - font.width(reward) - canvasX - 54)), canvasX + 48, y + 9)
+            val count = "${QuestUi.number(line.progress, language)} / ${QuestUi.number(line.quantity, language)}"
+            graphics.drawString(font, count, right - font.width(count), y + 20, if (line.done) QuestUi.GREEN else QuestUi.DIM, true)
+            val goal = font.split(objective(quest, line.quantity), right - font.width(count) - canvasX - 54).firstOrNull() ?: Component.empty().visualOrderText
+            graphics.drawString(font, goal, canvasX + 48, y + 20, QuestUi.DIM, true)
+            QuestUi.bar(graphics, canvasX + 48, y + 32, right - canvasX - 48, 3, if (line.done) 1.0 else line.progress.toDouble() / line.quantity)
         }
         graphics.disableScissor()
     }
@@ -424,23 +619,26 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         graphics.pose().translate(0f, 0f, 300f)
         graphics.fill(0, 0, width, height, 0x78000000)
         val dw = 236
-        val dh = 170
+        // The advancement's description in full, in its own inset between the title and the podium.
+        val description = advancementText(quest)?.second?.let { font.split(it, dw - 32).take(3) }.orEmpty()
+        val box = if (description.isEmpty()) 0 else 10 + 10 * description.size
+        val shift = if (box == 0) 0 else box + 4
+        val dh = 170 + shift
         val dx = (width - dw) / 2
         val dy = (height - dh) / 2
         graphics.blitSprite(QuestUi.PANEL, dx, dy, dw, dh)
         val rank = data.view?.ranks?.get(quest.id)
         secretNode(graphics, dx + 26, dy + 26, quest, if (rank != null) NodeState.CLAIMED else NodeState.PROGRESS, glow = false)
         QuestUi.title(graphics, font, Component.literal(QuestUi.fit(font, quest.name.get(language), dw - 60)), dx + 48, dy + 16)
-        val advancement = quest.advancement?.let(ResourceLocation::tryParse)?.let { id ->
-            Minecraft.getInstance().connection?.advancements?.get(id)?.value()?.display()?.map { it.description }?.orElse(null)
-        }
         val rarity = Component.translatable("gui.lnbquests.rarity.${quest.tier}")
-        val subtitle = when {
-            quest.hidden == true -> rarity.copy().append(", ").append(Component.translatable("gui.lnbquests.secret"))
-            advancement != null -> rarity.copy().append(", ").append(advancement)
-            else -> rarity
+        val subtitle = if (quest.hidden == true) rarity.copy().append(", ").append(Component.translatable("gui.lnbquests.secret")) else rarity
+        graphics.drawString(font, subtitle, dx + 48, dy + 28, QuestUi.DIM, true)
+        if (box > 0) {
+            graphics.blitSprite(QuestUi.PANEL_INSET, dx + 10, dy + 42, dw - 20, box)
+            description.forEachIndexed { i, line -> graphics.drawString(font, line, dx + 16, dy + 47 + i * 10, QuestUi.IVORY, true) }
         }
-        graphics.drawString(font, font.split(subtitle, dw - 60).firstOrNull() ?: subtitle.visualOrderText, dx + 48, dy + 28, QuestUi.DIM, true)
+        graphics.pose().pushPose()
+        graphics.pose().translate(0f, shift.toFloat(), 0f)
         graphics.blitSprite(QuestUi.PANEL_INSET, dx + 10, dy + 42, dw - 20, 84)
         graphics.drawString(font, Component.translatable("gui.lnbquests.podium"), dx + 16, dy + 47, QuestUi.IVORY, true)
         val podium = data.view?.podiums?.get(quest.id).orEmpty()
@@ -463,6 +661,7 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         val rest = ((quest.reward ?: 0.0) * (quest.restShare ?: 2.0) / 100 * data.kGlobal).roundToLong()
         graphics.drawString(font, Component.translatable("gui.lnbquests.rest", QuestUi.amount(rest, language)), dx + 16, dy + 132, QuestUi.MUTED, true)
         if (rank != null) graphics.drawString(font, Component.translatable("gui.lnbquests.your_rank", rank), dx + 16, dy + 146, QuestUi.GREEN, true)
+        graphics.pose().popPose()
         val bx = dx + dw - 100
         val by = dy + dh - 26
         val mouse = Minecraft.getInstance().mouseHandler
@@ -605,7 +804,13 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
-        if (popup == null) scroll = (scroll - (scrollY * 12).toInt()).coerceIn(0, maxScroll)
+        if (popup != null) return true
+        if (mouseX >= sideX && mouseX < sideX + SIDEBAR && mouseY >= sideY && mouseY < sideY + H - 32) {
+            // Only the chapter list scrolls; the pages below it stay put.
+            if (mouseY < chapterBottom) sideScroll = (sideScroll - (scrollY * 12).toInt()).coerceIn(0, sideMax)
+        } else {
+            scroll = (scroll - (scrollY * 12).toInt()).coerceIn(0, maxScroll)
+        }
         return true
     }
 

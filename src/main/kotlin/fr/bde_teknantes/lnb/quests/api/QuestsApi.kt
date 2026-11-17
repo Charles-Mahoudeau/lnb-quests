@@ -27,8 +27,8 @@ object QuestsApi {
 
     fun config(): CompletableFuture<ApiResult<QuestConfig>> = call("quests config", "GET", "$BASE/config")
 
-    fun seedCatalog(quests: List<QuestDef>): CompletableFuture<ApiResult<CatalogResult>> =
-        call("quests catalogue", "POST", "$BASE/catalog", CatalogBody(quests))
+    fun seedCatalog(categories: List<CategoryDef>, quests: List<QuestDef>): CompletableFuture<ApiResult<CatalogResult>> =
+        call("quests catalogue", "POST", "$BASE/catalog", CatalogBody(categories, quests))
 
     fun progress(items: List<ProgressItem>): CompletableFuture<ApiResult<Unit>> =
         call("quests progress", "POST", "$BASE/progress", ProgressBody(items))

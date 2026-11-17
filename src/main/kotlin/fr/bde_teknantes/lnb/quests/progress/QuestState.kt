@@ -21,7 +21,24 @@ data class PlayerQuests(
     val ranked: MutableSet<String> = HashSet(),
     /** Individual quests whose counter changed since the last push to the site. */
     val dirty: MutableSet<String> = HashSet(),
+    /** The Paris day the daily counters below are for ("YYYY-MM-DD"). */
+    var dailyDay: String = "",
+    /** Daily quest id -> its counter today. */
+    val dailyCounters: MutableMap<String, Long> = HashMap(),
+    /** Daily quests sent to the site today and not refused. */
+    val dailyReported: MutableSet<String> = HashSet(),
+    /** Daily quests the site paid today (or said were already paid). */
+    val dailyDone: MutableSet<String> = HashSet(),
 ) {
+    /** Starts the daily counters over when [day] isn't theirs. */
+    fun dailyFor(day: String) {
+        if (dailyDay == day) return
+        dailyDay = day
+        dailyCounters.clear()
+        dailyReported.clear()
+        dailyDone.clear()
+    }
+
     fun resetFor(season: Int) {
         this.season = season
         counters.clear()
@@ -80,6 +97,10 @@ class QuestState : SavedData() {
             confirmed = HashSet(value.confirmed ?: emptySet()),
             ranked = HashSet(value.ranked ?: emptySet()),
             dirty = HashSet(value.dirty ?: emptySet()),
+            dailyDay = value.dailyDay ?: "",
+            dailyCounters = HashMap(value.dailyCounters ?: emptyMap()),
+            dailyReported = HashSet(value.dailyReported ?: emptySet()),
+            dailyDone = HashSet(value.dailyDone ?: emptySet()),
         )
 
         fun get(server: MinecraftServer): QuestState =

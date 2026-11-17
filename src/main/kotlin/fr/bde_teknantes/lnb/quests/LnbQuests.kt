@@ -5,6 +5,7 @@ import fr.bde_teknantes.lnb.quests.api.QuestEvents
 import fr.bde_teknantes.lnb.quests.catalog.Catalog
 import fr.bde_teknantes.lnb.quests.command.QuestCommands
 import fr.bde_teknantes.lnb.quests.community.CommunityQuest
+import fr.bde_teknantes.lnb.quests.daily.DailyQuests
 import fr.bde_teknantes.lnb.quests.flash.FlashRaces
 import fr.bde_teknantes.lnb.quests.journal.QuestJournal
 import fr.bde_teknantes.lnb.quests.network.QuestNetwork
@@ -32,7 +33,7 @@ import org.slf4j.Logger
  * Common entrypoint. Only the logical server talks to LNB's site; the client shows the quest screen.
  *
  * Quests count on the server and are paid by the site (`docs/quests.md` on the site): personal tiers, server
- * advancements by rank, community goals and flash races.
+ * advancements by rank, community goals, flash races and daily quests.
  */
 @Mod(LnbQuests.ID)
 class LnbQuests(modBus: IEventBus, container: ModContainer) {
@@ -44,6 +45,7 @@ class LnbQuests(modBus: IEventBus, container: ModContainer) {
         Progress.register()
         ServerQuests.register()
         FlashRaces.register()
+        DailyQuests.register()
         CommunityQuest.register()
         QuestScreens.register()
 
@@ -93,6 +95,7 @@ class LnbQuests(modBus: IEventBus, container: ModContainer) {
     private fun onServerTick(event: ServerTickEvent.Post) {
         if (++ticks % 20 != 0) return
         FlashRaces.onSecond(event.server)
+        DailyQuests.onSecond(event.server)
         if (++syncTicks >= Catalog.pollSeconds()) {
             syncTicks = 0
             sync(event.server)

@@ -11,6 +11,7 @@ import fr.bde_teknantes.lnb.quests.api.QuestDef
 import fr.bde_teknantes.lnb.quests.api.QuestsApi
 import fr.bde_teknantes.lnb.quests.catalog.Catalog
 import fr.bde_teknantes.lnb.quests.community.CommunityQuest
+import fr.bde_teknantes.lnb.quests.daily.DailyQuests
 import fr.bde_teknantes.lnb.quests.flash.FlashRaces
 import fr.bde_teknantes.lnb.quests.journal.JournalEntry
 import fr.bde_teknantes.lnb.quests.journal.Outcome
@@ -30,8 +31,9 @@ import net.neoforged.neoforge.network.PacketDistributor
 import net.neoforged.neoforge.network.handling.IPayloadContext
 
 /**
- * The quest screen, server side: builds what a player sees (the catalogue, their counters, the site's view of their
- * tiers and ranks, the flash race and the community quest) and handles claims and deliveries from it.
+ * The quest screen, server side: builds what a player sees (the catalogue and its categories, their counters, today's
+ * daily quests, the site's view of their tiers and ranks, the flash race and the community quest) and handles claims
+ * and deliveries from it.
  */
 object QuestScreens {
     private const val CLAIM = "claim"
@@ -65,6 +67,32 @@ object QuestScreens {
         return hidden && view?.podiums?.get(quest.id).isNullOrEmpty() && view?.ranks?.containsKey(quest.id) != true
     }
 
+    /** The advancement a quest is about: a server quest's, or an `advancement` objective's target. */
+    fun advancementOf(quest: QuestDef): String? = when {
+        quest.isServer -> quest.advancement
+        quest.objective.type == "advancement" -> quest.objective.target
+        else -> null
+    }
+
+    /**
+     * The advancements' texts for the screen. Left out: secret server quests (masked until someone is first), and
+     * advancements the game hides that this player doesn't have yet.
+     */
+    private fun advancementTexts(player: ServerPlayer, view: PlayerView?): Map<String, AdvancementText> {
+        val server = player.server
+        val registries = server.registryAccess()
+        return Catalog.quests.mapNotNull { quest ->
+            val holder = advancementOf(quest)?.let(ResourceLocation::tryParse)?.let(server.advancements::get) ?: return@mapNotNull null
+            val display = holder.value().display().orElse(null) ?: return@mapNotNull null
+            if (quest.isServer && secret(server, quest, view)) return@mapNotNull null
+            if (!quest.isServer && display.isHidden && !player.advancements.getOrStartProgress(holder).isDone) return@mapNotNull null
+            quest.id to AdvancementText(
+                Component.Serializer.toJson(display.title, registries),
+                Component.Serializer.toJson(display.description, registries),
+            )
+        }.toMap()
+    }
+
     private fun send(player: ServerPlayer, open: Boolean) {
         val server = player.server
         QuestsApi.player(player.uuid).thenAccept { result ->
@@ -76,13 +104,31 @@ object QuestScreens {
                     val leader = it.leader()
                     FlashView(it.quest.id, it.quantity, it.endsAt.toEpochMilli(), leader?.let { l -> it.names[l.first] }, leader?.second ?: 0, it.progress[player.uuid] ?: 0)
                 }
+                val mine = state.player(player.uuid)
+                val view = (result as? ApiResult.Ok)?.body
+                val today = DailyQuests.day()
+                mine.dailyFor(today)
+                val daily = DailyScreen(
+                    endsAt = DailyQuests.endOf(today).toEpochMilli(),
+                    lines = DailyQuests.today().map { (quest, entry) ->
+                        DailyLine(
+                            quest = quest.id,
+                            quantity = entry.quantity,
+                            progress = minOf(mine.dailyCounters[quest.id] ?: 0, entry.quantity),
+                            done = quest.id in mine.dailyDone || view?.daily?.contains(quest.id) == true,
+                        )
+                    },
+                )
                 val data = ScreenData(
                     season = state.season,
+                    categories = Catalog.categories,
+                    advancements = advancementTexts(player, view),
+                    daily = daily,
                     quests = Catalog.quests.map { quest ->
                         val shown = quest.copy(items = quest.items?.map { it.copy(snbt = "") }, tiers = quest.tiers?.map { t -> t.copy(items = t.items?.map { it.copy(snbt = "") }) })
                         if (secret(server, quest, (result as? ApiResult.Ok)?.body)) shown.copy(name = SECRET_NAME, description = null, icon = "", hidden = true) else shown
                     },
-                    counters = state.player(player.uuid).counters.toMap(),
+                    counters = mine.counters.toMap(),
                     view = (result as? ApiResult.Ok)?.body,
                     problem = (result as? ApiResult.Http)?.problem ?: if (result is ApiResult.Network) "offline" else null,
                     community = CommunityQuest.running,

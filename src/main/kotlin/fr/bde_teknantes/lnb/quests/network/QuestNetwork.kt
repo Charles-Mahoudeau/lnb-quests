@@ -8,7 +8,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
  * changes, so mismatched client and server versions refuse to connect.
  */
 object QuestNetwork {
-    private const val PROTOCOL_VERSION = "3"
+    private const val PROTOCOL_VERSION = "4"
 
     fun register(event: RegisterPayloadHandlersEvent) {
         val registrar = event.registrar(PROTOCOL_VERSION)

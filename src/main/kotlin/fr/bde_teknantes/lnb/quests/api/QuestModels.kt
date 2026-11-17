@@ -17,7 +17,7 @@ data class Range(val min: Int = 1, val max: Int = 1)
 
 data class Hours(val from: String = "00:00", val to: String = "00:00")
 
-/** A quest of the catalogue: `individual`, `server` or `flash`. */
+/** A quest of the catalogue: `individual`, `server`, `flash` or `daily`. */
 data class QuestDef(
     val id: String = "",
     val family: String = "",
@@ -26,8 +26,10 @@ data class QuestDef(
     val icon: String = "minecraft:paper",
     val objective: Objective = Objective(),
     val enabled: Boolean = true,
-    // individual
+    // individual (required) and server (optional): a [CategoryDef] of the same family, and one of its subcategories
     val category: String? = null,
+    val subcategory: String? = null,
+    // individual
     val tiers: List<Tier>? = null,
     // server
     val advancement: String? = null,
@@ -38,23 +40,48 @@ data class QuestDef(
     /** A secret advancement: "???" until someone takes first place. Hidden advancements of the game count too. */
     val hidden: Boolean? = null,
     val items: List<ItemReward>? = null,
-    // flash
+    // flash and daily
     val range: Range? = null,
     val rewardPerUnit: Double? = null,
     val weight: Int? = null,
+    // flash
     val minPlayers: Int? = null,
     val hours: Hours? = null,
 ) {
     val isIndividual get() = family == INDIVIDUAL
     val isServer get() = family == SERVER
     val isFlash get() = family == FLASH
+    val isDaily get() = family == DAILY
 
     companion object {
         const val INDIVIDUAL = "individual"
         const val SERVER = "server"
         const val FLASH = "flash"
+        const val DAILY = "daily"
     }
 }
+
+data class SubcategoryDef(val id: String = "", val name: Localized = Localized())
+
+/**
+ * A category: an individual chapter or a Records group (`family`), with its subcategories, shown as headings inside it
+ * in their order. Quests name it by `id`.
+ */
+data class CategoryDef(
+    val id: String = "",
+    val family: String = "",
+    val name: Localized = Localized(),
+    val icon: String = "minecraft:paper",
+    val siteIcon: String? = null,
+    val subcategories: List<SubcategoryDef>? = null,
+    val sortOrder: Int? = null,
+)
+
+/** One of the day's quests and the quantity drawn for it. */
+data class DailyEntry(val quest: String = "", val quantity: Long = 0)
+
+/** Today's daily quests (Paris day "YYYY-MM-DD"), the same for everyone until [endsAt]. */
+data class DailyView(val day: String = "", val endsAt: String = "", val quests: List<DailyEntry> = emptyList())
 
 data class Season(val id: Int = 0, val number: Int = 0, val startedAt: String = "")
 
@@ -96,6 +123,8 @@ data class IndexView(val index: Double = 1000.0, val kGlobal: Double = 1.0)
 data class QuestConfig(
     val season: Season = Season(),
     val quests: List<QuestDef> = emptyList(),
+    val categories: List<CategoryDef> = emptyList(),
+    val daily: DailyView = DailyView(),
     val flash: FlashSettings = FlashSettings(),
     val antiCheat: AntiCheat = AntiCheat(),
     val community: Community? = null,
@@ -103,8 +132,12 @@ data class QuestConfig(
     val pollSeconds: Int = 300,
 )
 
-data class CatalogBody(val quests: List<QuestDef>)
-data class CatalogResult(val added: List<String> = emptyList(), val kept: List<String> = emptyList())
+data class CatalogBody(val categories: List<CategoryDef>, val quests: List<QuestDef>)
+data class CatalogResult(
+    val added: List<String> = emptyList(),
+    val kept: List<String> = emptyList(),
+    val categoriesAdded: List<String> = emptyList(),
+)
 
 data class ProgressItem(val player: String, val quest: String, val value: Long)
 data class ProgressBody(val items: List<ProgressItem>)
@@ -152,6 +185,15 @@ data class FlashBody(
 )
 data class FlashResult(val replayed: Boolean = false, val flashId: String = "", val amount: Long = 0, val capped: Boolean = false)
 
+data class DailyBody(val idempotencyKey: String, val player: String, val day: String, val quest: String)
+data class DailyResult(
+    val replayed: Boolean = false,
+    val completionId: String = "",
+    val quantity: Long = 0,
+    val amount: Long = 0,
+    val capped: Boolean = false,
+)
+
 data class ContributionItem(val player: String, val amount: Long)
 data class ContributionBody(val idempotencyKey: String, val items: List<ContributionItem>)
 data class ContributionResult(val replayed: Boolean = false, val progress: Long = 0, val goal: Long = 0)
@@ -174,4 +216,6 @@ data class PlayerView(
     val ranks: Map<String, Int> = emptyMap(),
     val kPlayer: Double = 1.0,
     val community: CommunityPart? = null,
+    /** Today's daily quests this person finished, with any of their accounts. */
+    val daily: List<String> = emptyList(),
 )

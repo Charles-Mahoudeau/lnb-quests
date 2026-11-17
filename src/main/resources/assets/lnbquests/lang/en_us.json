@@ -142,5 +142,15 @@
   "tag.item.c.crops.wheat": "Wheat",
   "tag.item.c.crops.potato": "Potatoes",
   "tag.item.c.cobblestones": "Cobblestone",
-  "tag.item.c.ingots.iron": "Iron ingots"
+  "tag.item.c.ingots.iron": "Iron ingots",
+  "gui.lnbquests.tab.daily": "Daily",
+  "gui.lnbquests.daily.none": "No daily quest today. New ones are drawn every day at midnight.",
+  "gui.lnbquests.daily.ends": "Ends in %s h %s",
+  "gui.lnbquests.daily.done": "Done",
+  "actionbar.lnbquests.daily": "Daily, %s: %s / %s",
+  "chat.lnbquests.daily.done": "Daily quest done: %s. You get %s.",
+  "toast.lnbquests.daily": "Daily quest done",
+  "toast.lnbquests.daily.description": "%s: +%s LNBits",
+  "gui.lnbquests.advancement.todo": "To get",
+  "gui.lnbquests.advancement.done": "Got it"
 }

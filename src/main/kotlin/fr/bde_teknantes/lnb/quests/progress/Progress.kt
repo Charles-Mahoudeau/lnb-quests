@@ -9,6 +9,7 @@ import fr.bde_teknantes.lnb.quests.api.QuestDef
 import fr.bde_teknantes.lnb.quests.api.QuestsApi
 import fr.bde_teknantes.lnb.quests.catalog.Catalog
 import fr.bde_teknantes.lnb.quests.community.CommunityQuest
+import fr.bde_teknantes.lnb.quests.daily.DailyQuests
 import fr.bde_teknantes.lnb.quests.flash.FlashRaces
 import fr.bde_teknantes.lnb.quests.journal.JournalEntry
 import fr.bde_teknantes.lnb.quests.journal.Outcome
@@ -26,8 +27,8 @@ import java.util.UUID
 
 /**
  * Where every counted action ends up: a block mined, a mob killed, a catch, a craft, a distance, a delivery or an
- * advancement. It moves the player's individual counters (and reports tiers to the site), the flash race and the
- * community quest.
+ * advancement. It moves the player's individual counters (and reports tiers to the site), today's daily quests, the
+ * flash race and the community quest.
  */
 object Progress {
     private const val PURPOSE = "completion"
@@ -65,6 +66,10 @@ object Progress {
                     checkTiers(player, quest, mine)
                 }
                 quest.isFlash -> FlashRaces.onProgress(player, quest, amount)
+                quest.isDaily -> {
+                    DailyQuests.onProgress(player, quest, amount, mine)
+                    changed = true
+                }
             }
         }
         CommunityQuest.onProgress(player, type, amount, matches)

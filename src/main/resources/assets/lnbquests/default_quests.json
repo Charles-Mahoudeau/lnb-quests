@@ -1,4 +1,146 @@
 {
+  "categories": [
+    {
+      "id": "mining",
+      "family": "individual",
+      "name": {
+        "fr": "Minage",
+        "en": "Mining"
+      },
+      "icon": "minecraft:diamond_pickaxe",
+      "siteIcon": "i-lucide-pickaxe"
+    },
+    {
+      "id": "combat",
+      "family": "individual",
+      "name": {
+        "fr": "Combat",
+        "en": "Combat"
+      },
+      "icon": "minecraft:iron_sword",
+      "siteIcon": "i-lucide-sword"
+    },
+    {
+      "id": "fishing",
+      "family": "individual",
+      "name": {
+        "fr": "Pêche",
+        "en": "Fishing"
+      },
+      "icon": "minecraft:fishing_rod",
+      "siteIcon": "i-lucide-fish"
+    },
+    {
+      "id": "exploration",
+      "family": "individual",
+      "name": {
+        "fr": "Exploration",
+        "en": "Exploring"
+      },
+      "icon": "minecraft:compass",
+      "siteIcon": "i-lucide-compass"
+    },
+    {
+      "id": "crafting",
+      "family": "individual",
+      "name": {
+        "fr": "Artisanat",
+        "en": "Crafting"
+      },
+      "icon": "minecraft:crafting_table",
+      "siteIcon": "i-lucide-hammer"
+    },
+    {
+      "id": "delivery",
+      "family": "individual",
+      "name": {
+        "fr": "Livraisons",
+        "en": "Delivery"
+      },
+      "icon": "minecraft:bundle",
+      "siteIcon": "i-lucide-package"
+    },
+    {
+      "id": "overworld",
+      "family": "server",
+      "name": {
+        "fr": "Monde",
+        "en": "Overworld"
+      },
+      "icon": "minecraft:grass_block",
+      "siteIcon": "i-lucide-trees"
+    },
+    {
+      "id": "nether",
+      "family": "server",
+      "name": {
+        "fr": "Nether",
+        "en": "Nether"
+      },
+      "icon": "minecraft:netherrack",
+      "siteIcon": "i-lucide-flame"
+    },
+    {
+      "id": "end",
+      "family": "server",
+      "name": {
+        "fr": "End",
+        "en": "End"
+      },
+      "icon": "minecraft:end_stone",
+      "siteIcon": "i-lucide-moon-star"
+    },
+    {
+      "id": "create",
+      "family": "server",
+      "name": {
+        "fr": "Create",
+        "en": "Create"
+      },
+      "icon": "create:cogwheel",
+      "siteIcon": "i-lucide-cog"
+    },
+    {
+      "id": "stellarity",
+      "family": "server",
+      "name": {
+        "fr": "Stellarity",
+        "en": "Stellarity"
+      },
+      "icon": "minecraft:end_crystal",
+      "siteIcon": "i-lucide-sparkles"
+    },
+    {
+      "id": "cooking",
+      "family": "server",
+      "name": {
+        "fr": "Cuisine",
+        "en": "Cooking"
+      },
+      "icon": "farmersdelight:cooking_pot",
+      "siteIcon": "i-lucide-chef-hat"
+    },
+    {
+      "id": "exploration",
+      "family": "server",
+      "name": {
+        "fr": "Exploration",
+        "en": "Exploration"
+      },
+      "icon": "minecraft:filled_map",
+      "siteIcon": "i-lucide-compass"
+    },
+    {
+      "id": "fishing",
+      "family": "server",
+      "name": {
+        "fr": "Pêche",
+        "en": "Fishing"
+      },
+      "icon": "minecraft:fishing_rod",
+      "siteIcon": "i-lucide-fish"
+    }
+  ],
   "quests": [
     {
       "id": "mine_stone",
@@ -1113,6 +1255,7 @@
     {
       "id": "free_the_end",
       "family": "server",
+      "category": "end",
       "name": {
         "fr": "Free the End",
         "en": "Free the End"
@@ -1129,6 +1272,7 @@
     {
       "id": "how_did_we_get_here",
       "family": "server",
+      "category": "nether",
       "name": {
         "fr": "How Did We Get Here?",
         "en": "How Did We Get Here?"
@@ -1144,6 +1288,7 @@
     {
       "id": "adventuring_time",
       "family": "server",
+      "category": "exploration",
       "name": {
         "fr": "Adventuring Time",
         "en": "Adventuring Time"
@@ -1159,6 +1304,7 @@
     {
       "id": "monsters_hunted",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Monsters Hunted",
         "en": "Monsters Hunted"
@@ -1174,6 +1320,7 @@
     {
       "id": "balanced_diet",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "A Balanced Diet",
         "en": "A Balanced Diet"
@@ -1189,6 +1336,7 @@
     {
       "id": "two_by_two",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Two by Two",
         "en": "Two by Two"
@@ -1204,6 +1352,7 @@
     {
       "id": "serious_dedication",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Serious Dedication",
         "en": "Serious Dedication"
@@ -1219,6 +1368,7 @@
     {
       "id": "arbalistic",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Arbalistic",
         "en": "Arbalistic"
@@ -1234,6 +1384,7 @@
     {
       "id": "the_end",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "The End?",
         "en": "The End?"
@@ -1249,6 +1400,7 @@
     {
       "id": "withering_heights",
       "family": "server",
+      "category": "nether",
       "name": {
         "fr": "Withering Heights",
         "en": "Withering Heights"
@@ -1264,6 +1416,7 @@
     {
       "id": "beaconator",
       "family": "server",
+      "category": "nether",
       "name": {
         "fr": "Beaconator",
         "en": "Beaconator"
@@ -1279,6 +1432,7 @@
     {
       "id": "cover_me_in_debris",
       "family": "server",
+      "category": "nether",
       "name": {
         "fr": "Cover Me in Debris",
         "en": "Cover Me in Debris"
@@ -1294,6 +1448,7 @@
     {
       "id": "skys_the_limit",
       "family": "server",
+      "category": "end",
       "name": {
         "fr": "The Sky's the Limit",
         "en": "The Sky's the Limit"
@@ -1309,6 +1464,7 @@
     {
       "id": "hot_tourist_destinations",
       "family": "server",
+      "category": "nether",
       "name": {
         "fr": "Hot Tourist Destinations",
         "en": "Hot Tourist Destinations"
@@ -1324,6 +1480,7 @@
     {
       "id": "hero_of_the_village",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Hero of the Village",
         "en": "Hero of the Village"
@@ -1339,6 +1496,7 @@
     {
       "id": "uneasy_alliance",
       "family": "server",
+      "category": "nether",
       "name": {
         "fr": "Uneasy Alliance",
         "en": "Uneasy Alliance"
@@ -1354,6 +1512,7 @@
     {
       "id": "over_overkill",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Over-Overkill",
         "en": "Over-Overkill"
@@ -1369,6 +1528,7 @@
     {
       "id": "eye_spy",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Eye Spy",
         "en": "Eye Spy"
@@ -1384,6 +1544,7 @@
     {
       "id": "we_need_to_go_deeper",
       "family": "server",
+      "category": "nether",
       "name": {
         "fr": "We Need to Go Deeper",
         "en": "We Need to Go Deeper"
@@ -1399,6 +1560,7 @@
     {
       "id": "diamonds",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Diamonds!",
         "en": "Diamonds!"
@@ -1414,6 +1576,7 @@
     {
       "id": "into_fire",
       "family": "server",
+      "category": "nether",
       "name": {
         "fr": "Into Fire",
         "en": "Into Fire"
@@ -1429,6 +1592,7 @@
     {
       "id": "local_brewery",
       "family": "server",
+      "category": "nether",
       "name": {
         "fr": "Local Brewery",
         "en": "Local Brewery"
@@ -1444,6 +1608,7 @@
     {
       "id": "enchanter",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Enchanter",
         "en": "Enchanter"
@@ -1459,6 +1624,7 @@
     {
       "id": "zombie_doctor",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Zombie Doctor",
         "en": "Zombie Doctor"
@@ -1474,6 +1640,7 @@
     {
       "id": "sniper_duel",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Sniper Duel",
         "en": "Sniper Duel"
@@ -1489,6 +1656,7 @@
     {
       "id": "very_very_frightening",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Very Very Frightening",
         "en": "Very Very Frightening"
@@ -1504,6 +1672,7 @@
     {
       "id": "total_beelocation",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Total Beelocation",
         "en": "Total Beelocation"
@@ -1519,6 +1688,7 @@
     {
       "id": "under_lock_and_key",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Under Lock and Key",
         "en": "Under Lock and Key"
@@ -1534,6 +1704,7 @@
     {
       "id": "smells_interesting",
       "family": "server",
+      "category": "overworld",
       "name": {
         "fr": "Smells Interesting",
         "en": "Smells Interesting"
@@ -1549,6 +1720,7 @@
     {
       "id": "create_long_train",
       "family": "server",
+      "category": "create",
       "name": {
         "fr": "Efforts ambitieux",
         "en": "Ambitious Endeavours"
@@ -1564,6 +1736,7 @@
     {
       "id": "create_track_crafting_factory",
       "family": "server",
+      "category": "create",
       "name": {
         "fr": "Usine à rails",
         "en": "Track Factory"
@@ -1579,6 +1752,7 @@
     {
       "id": "create_steam_engine_maxed",
       "family": "server",
+      "category": "create",
       "name": {
         "fr": "À toute vapeur !",
         "en": "Full Steam"
@@ -1594,6 +1768,7 @@
     {
       "id": "create_windmill_maxed",
       "family": "server",
+      "category": "create",
       "name": {
         "fr": "Un vent de tempête",
         "en": "A strong Breeze"
@@ -1609,6 +1784,7 @@
     {
       "id": "create_cart_pickup",
       "family": "server",
+      "category": "create",
       "name": {
         "fr": "Gros bras",
         "en": "Strong Arms"
@@ -1624,6 +1800,7 @@
     {
       "id": "create_hose_pulley_lava",
       "family": "server",
+      "category": "create",
       "name": {
         "fr": "Atteindre le manteau",
         "en": "Tapping the Mantle"
@@ -1639,6 +1816,7 @@
     {
       "id": "create_brass",
       "family": "server",
+      "category": "create",
       "name": {
         "fr": "Vrais alliages",
         "en": "Real Alloys"
@@ -1654,6 +1832,7 @@
     {
       "id": "create_precision_mechanism",
       "family": "server",
+      "category": "create",
       "name": {
         "fr": "Curiosités complexes",
         "en": "Complex Curiosities"
@@ -1669,6 +1848,7 @@
     {
       "id": "create_train",
       "family": "server",
+      "category": "create",
       "name": {
         "fr": "En voiture !",
         "en": "All Aboard!"
@@ -1684,6 +1864,7 @@
     {
       "id": "create_long_travel",
       "family": "server",
+      "category": "create",
       "name": {
         "fr": "Excursion",
         "en": "Field Trip"
@@ -1699,6 +1880,7 @@
     {
       "id": "create_arm_many_targets",
       "family": "server",
+      "category": "create",
       "name": {
         "fr": "Organisation automatisée",
         "en": "Organize-o-Tron"
@@ -1714,6 +1896,7 @@
     {
       "id": "create_pulley_maxed",
       "family": "server",
+      "category": "create",
       "name": {
         "fr": "Descente vers l'inconnu",
         "en": "Rope to Nowhere"
@@ -1729,6 +1912,7 @@
     {
       "id": "stellarity_conqueror",
       "family": "server",
+      "category": "stellarity",
       "name": {
         "fr": "Conquérant",
         "en": "Conqueror"
@@ -1745,6 +1929,7 @@
     {
       "id": "stellarity_fae_flayer",
       "family": "server",
+      "category": "stellarity",
       "name": {
         "fr": "Fée Flayer",
         "en": "Fae Flayer"
@@ -1760,6 +1945,7 @@
     {
       "id": "stellarity_discover_all_biomes",
       "family": "server",
+      "category": "stellarity",
       "name": {
         "fr": "Voyageur intemporel",
         "en": "Timeless Traveler"
@@ -1775,6 +1961,7 @@
     {
       "id": "stellarity_god_slayer",
       "family": "server",
+      "category": "stellarity",
       "name": {
         "fr": "Tueur de Dieu",
         "en": "God Slayer"
@@ -1791,6 +1978,7 @@
     {
       "id": "stellarity_obtain_dragonblade",
       "family": "server",
+      "category": "stellarity",
       "name": {
         "fr": "Dragonborn",
         "en": "Dragonborn"
@@ -1806,6 +1994,7 @@
     {
       "id": "stellarity_summon_empress",
       "family": "server",
+      "category": "stellarity",
       "name": {
         "fr": "The Queen of Flickering Lights",
         "en": "The Queen of Flickering Lights"
@@ -1821,6 +2010,7 @@
     {
       "id": "stellarity_super_sonic",
       "family": "server",
+      "category": "stellarity",
       "name": {
         "fr": "Super Sonic",
         "en": "Super Sonic"
@@ -1836,6 +2026,7 @@
     {
       "id": "stellarity_craft_full_shulker_armor",
       "family": "server",
+      "category": "stellarity",
       "name": {
         "fr": "Je suis Titanium!",
         "en": "I am Titanium!"
@@ -1851,6 +2042,7 @@
     {
       "id": "stellarity_topped_off",
       "family": "server",
+      "category": "stellarity",
       "name": {
         "fr": "Topped Off",
         "en": "Topped Off"
@@ -1866,6 +2058,7 @@
     {
       "id": "stellarity_find_end_village",
       "family": "server",
+      "category": "stellarity",
       "name": {
         "fr": "Echoué dans la Mer de l'Éternité",
         "en": "Stranded in The Sea of Eternity"
@@ -1881,6 +2074,7 @@
     {
       "id": "stellarity_enter_chapel",
       "family": "server",
+      "category": "stellarity",
       "name": {
         "fr": "Jardins sacrés",
         "en": "Sacred Gardens"
@@ -1896,6 +2090,7 @@
     {
       "id": "farmersdelight_master_chef",
       "family": "server",
+      "category": "cooking",
       "name": {
         "fr": "Master Chef",
         "en": "Master Chef"
@@ -1911,6 +2106,7 @@
     {
       "id": "farmersdelight_plant_all_crops",
       "family": "server",
+      "category": "cooking",
       "name": {
         "fr": "Rotation des cultures",
         "en": "Crop Rotation"
@@ -1926,6 +2122,7 @@
     {
       "id": "farmersdelight_obtain_netherite_knife",
       "family": "server",
+      "category": "cooking",
       "name": {
         "fr": "Qui craint le danger...",
         "en": "If You Can't Take the Heat..."
@@ -1941,6 +2138,7 @@
     {
       "id": "betterarcheology_all_fossils_found",
       "family": "server",
+      "category": "exploration",
       "name": {
         "fr": "Fierté du Paléontologue",
         "en": "Paleontologist's Pride"
@@ -1956,6 +2154,7 @@
     {
       "id": "betterdeserttemples_temple_clear",
       "family": "server",
+      "category": "exploration",
       "name": {
         "fr": "Eternal Slumber",
         "en": "Eternal Slumber"
@@ -1971,6 +2170,7 @@
     {
       "id": "betterdungeons_all_dungeons",
       "family": "server",
+      "category": "exploration",
       "name": {
         "fr": "Professional Dungeoneer",
         "en": "Professional Dungeoneer"
@@ -1986,6 +2186,7 @@
     {
       "id": "lootr_100loot",
       "family": "server",
+      "category": "exploration",
       "name": {
         "fr": "Centenaire",
         "en": "Centennial"
@@ -2001,6 +2202,7 @@
     {
       "id": "betterarcheology_unidentified_artifact",
       "family": "server",
+      "category": "exploration",
       "name": {
         "fr": "Tout commence à s'assembler",
         "en": "It's all coming together"
@@ -2016,6 +2218,7 @@
     {
       "id": "tide_journal_completed",
       "family": "server",
+      "category": "fishing",
       "name": {
         "fr": "A Reel Completionist",
         "en": "A Reel Completionist"
@@ -2031,6 +2234,7 @@
     {
       "id": "tide_catch_legendary",
       "family": "server",
+      "category": "fishing",
       "name": {
         "fr": "One in a Million",
         "en": "One in a Million"
@@ -2046,6 +2250,7 @@
     {
       "id": "tide_all_fishing_rods",
       "family": "server",
+      "category": "fishing",
       "name": {
         "fr": "Hooked on Variety",
         "en": "Hooked on Variety"
@@ -2061,6 +2266,7 @@
     {
       "id": "tide_journal_halfway_completed",
       "family": "server",
+      "category": "fishing",
       "name": {
         "fr": "Aquatic Archivist",
         "en": "Aquatic Archivist"
@@ -2164,6 +2370,156 @@
         "max": 5000
       },
       "rewardPerUnit": 0.012,
+      "weight": 1
+    },
+    {
+      "id": "daily_logs",
+      "family": "daily",
+      "name": {
+        "fr": "Bûcheron du jour",
+        "en": "Today's lumberjack"
+      },
+      "icon": "minecraft:oak_log",
+      "objective": {
+        "type": "mine",
+        "target": "#minecraft:logs"
+      },
+      "range": {
+        "min": 64,
+        "max": 128
+      },
+      "rewardPerUnit": 0.3,
+      "weight": 1
+    },
+    {
+      "id": "daily_stone",
+      "family": "daily",
+      "name": {
+        "fr": "Carrière du jour",
+        "en": "Today's quarry"
+      },
+      "icon": "minecraft:stone",
+      "objective": {
+        "type": "mine",
+        "target": "minecraft:stone"
+      },
+      "range": {
+        "min": 256,
+        "max": 512
+      },
+      "rewardPerUnit": 0.08,
+      "weight": 1
+    },
+    {
+      "id": "daily_iron",
+      "family": "daily",
+      "name": {
+        "fr": "Fer du jour",
+        "en": "Today's iron"
+      },
+      "icon": "minecraft:raw_iron",
+      "objective": {
+        "type": "mine",
+        "target": "#c:ores/iron"
+      },
+      "range": {
+        "min": 16,
+        "max": 32
+      },
+      "rewardPerUnit": 1.5,
+      "weight": 1
+    },
+    {
+      "id": "daily_zombies",
+      "family": "daily",
+      "name": {
+        "fr": "Ronde de nuit",
+        "en": "Night watch"
+      },
+      "icon": "minecraft:rotten_flesh",
+      "objective": {
+        "type": "kill",
+        "target": "minecraft:zombie"
+      },
+      "range": {
+        "min": 10,
+        "max": 25
+      },
+      "rewardPerUnit": 1.2,
+      "weight": 1
+    },
+    {
+      "id": "daily_skeletons",
+      "family": "daily",
+      "name": {
+        "fr": "Chasse aux squelettes",
+        "en": "Skeleton hunt"
+      },
+      "icon": "minecraft:bone",
+      "objective": {
+        "type": "kill",
+        "target": "#minecraft:skeletons"
+      },
+      "range": {
+        "min": 10,
+        "max": 20
+      },
+      "rewardPerUnit": 1.5,
+      "weight": 1
+    },
+    {
+      "id": "daily_fish",
+      "family": "daily",
+      "name": {
+        "fr": "Pêche du jour",
+        "en": "Today's catch"
+      },
+      "icon": "minecraft:cod",
+      "objective": {
+        "type": "fish"
+      },
+      "range": {
+        "min": 8,
+        "max": 16
+      },
+      "rewardPerUnit": 3,
+      "weight": 1
+    },
+    {
+      "id": "daily_bread",
+      "family": "daily",
+      "name": {
+        "fr": "Fournée du jour",
+        "en": "Today's batch"
+      },
+      "icon": "minecraft:bread",
+      "objective": {
+        "type": "craft",
+        "target": "minecraft:bread"
+      },
+      "range": {
+        "min": 16,
+        "max": 32
+      },
+      "rewardPerUnit": 0.8,
+      "weight": 1
+    },
+    {
+      "id": "daily_travel",
+      "family": "daily",
+      "name": {
+        "fr": "Promenade",
+        "en": "A long walk"
+      },
+      "icon": "minecraft:leather_boots",
+      "objective": {
+        "type": "travel"
+      },
+      "range": {
+        "min": 3000,
+        "max": 6000
+      },
+      "rewardPerUnit": 0.008,
       "weight": 1
     }
   ]

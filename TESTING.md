@@ -23,3 +23,12 @@ With the site running (`feat/quests`), the flag `economy.quests` on, LNB Warden 
    Nether advancement is taken back (A can be ranked again). B, offline at the time, is reset at login.
 10. **Site down.** Stop the site, reach a tier, claim: "the site doesn't answer". Start it again: the tier and the claim
     go through within a few minutes, once each.
+11. **Categories.** On the site, Categories tab: add an individual category "Début de partie" with a subcategory
+    "Outils", put a personal quest in it with that subcategory. Within a second, the book shows the new chapter with
+    the quest under an "Outils" heading. Put a server quest in the Nether group: Records shows it there. With many
+    chapters, the sidebar scrolls with the wheel. Deleting a category a quest uses is refused.
+12. **Daily.** Settings, daily count 3, and at least three daily quests on. The book's Daily page lists three quests,
+    the same for A and B, with the time left. Do one: the action bar counts, then a chat line and a toast say it's paid,
+    and the page shows it done; doing more pays nothing more. A's second account sees it done too. At midnight (or
+    after deleting today's `quest_daily_draw` rows on the site, then `/quests sync`), new quests come and counters
+    start over.
