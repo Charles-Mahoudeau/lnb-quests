@@ -1,6 +1,7 @@
 package fr.bde_teknantes.lnb.quests
 
 import com.mojang.logging.LogUtils
+import fr.bde_teknantes.lnb.quests.api.QuestEvents
 import fr.bde_teknantes.lnb.quests.catalog.Catalog
 import fr.bde_teknantes.lnb.quests.command.QuestCommands
 import fr.bde_teknantes.lnb.quests.community.CommunityQuest
@@ -53,6 +54,9 @@ class LnbQuests(modBus: IEventBus, container: ModContainer) {
         bus.addListener(::onServerStarted)
         bus.addListener(::onServerStopping)
         bus.addListener(::onServerTick)
+        bus.addListener(QuestEvents::onServerStarted)
+        bus.addListener(QuestEvents::onServerStopping)
+        bus.addListener(QuestEvents::onServerTick)
         bus.addListener(::onLoggedIn)
         bus.addListener(::onLoggedOut)
         bus.addListener(QuestCommands::register)
@@ -117,6 +121,11 @@ class LnbQuests(modBus: IEventBus, container: ModContainer) {
         private fun applyConfig(server: MinecraftServer, config: fr.bde_teknantes.lnb.quests.api.QuestConfig) {
             Seasons.onConfig(server, config.season.number)
             CommunityQuest.onConfig(config.community)
+        }
+
+        /** Reads the site's settings, quests and community quest again: the site said they changed. */
+        fun reloadConfig(server: MinecraftServer) {
+            Catalog.refresh(server) { applyConfig(server, it) }
         }
 
         /** Sends what waits (counters, community contributions) and reads the site's settings again. */

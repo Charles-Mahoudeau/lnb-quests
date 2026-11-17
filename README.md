@@ -29,6 +29,10 @@ the server sends it to the site, which adds the quests it doesn't know; after th
 - Counting rules (from the site's settings): blocks placed by players, mobs from spawners and blocks broken by machines
   don't count; blocks made by fluids (stone generators) do; creative and spectator players don't progress.
 
+The server keeps the site's quest event stream open (with Warden's `api.url` and `api.token`): a quest, a setting,
+the season or the community quest edited on the site, and a reward claimed there, show in the game within a second.
+The poll (`sync.pollSeconds`) still runs in case the stream is down, and `/quests sync` forces one.
+
 Operators: `/quests flash start <quest> [goal]`, `/quests flash stop`, `/quests sync`, `/quests status`, and
 `/quests reward copy`, which copies the held item as a quest reward to paste in the site's quest editor.
 
@@ -42,6 +46,6 @@ Needs Java 21 (`JAVA_HOME`) and `libs/lnbwarden-*.jar` (not committed: build LNB
 that pays goes through a journal (`<world>/data/lnbquests_journal.json`) and is sent again with the same idempotency
 key until the site answers, after a restart too.
 
-## Licence
+## License
 
 AGPL-3.0-or-later.
