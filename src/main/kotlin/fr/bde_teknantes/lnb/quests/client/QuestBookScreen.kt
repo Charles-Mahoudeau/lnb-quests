@@ -257,7 +257,7 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
         hits.clear()
         QuestUi.title(graphics, font, title, x0 + 12, y0 + 10)
         val now = System.currentTimeMillis()
-        val right: Component = when {
+        val right: Component? = when {
             chapter == FLASH && data.flash == null && data.nextFlashAt > now ->
                 Component.translatable("gui.lnbquests.flash.next", ((data.nextFlashAt - now) / 60_000).coerceAtLeast(1))
             chapter == DAILY && data.daily.endsAt > now -> {
@@ -267,10 +267,10 @@ class QuestBookScreen(private var data: ScreenData) : Screen(Component.translata
             chapter == COMMUNITY && data.community != null -> runCatching {
                 val left = java.time.Duration.between(java.time.Instant.now(), java.time.Instant.parse(data.community!!.endsAt))
                 Component.translatable("gui.lnbquests.community.ends", left.toDays(), left.toHours() % 24)
-            }.getOrElse { Component.translatable("gui.lnbquests.season", data.season) }
-            else -> Component.translatable("gui.lnbquests.season", data.season)
+            }.getOrNull()
+            else -> null
         }
-        graphics.drawString(font, right, x0 + W - 12 - font.width(right), y0 + 10, QuestUi.DIM, true)
+        if (right != null) graphics.drawString(font, right, x0 + W - 12 - font.width(right), y0 + 10, QuestUi.DIM, true)
         sidebar(graphics, mouseX, mouseY)
         graphics.blitSprite(QuestUi.PANEL_INSET, canvasX, canvasY, canvasW, canvasH)
         for (gy in canvasY + 8 until canvasY + canvasH - 4 step 12) {

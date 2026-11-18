@@ -76,7 +76,7 @@ object QuestCommands {
                 context.source.sendSuccess({
                     Component.translatable(
                         "command.lnbquests.status",
-                        config.season.number,
+                        config.resetAt ?: "-",
                         Catalog.quests.size,
                         if (Catalog.fromSite) Component.translatable("command.lnbquests.status.site") else Component.translatable("command.lnbquests.status.local"),
                         QuestJournal.pending.size,

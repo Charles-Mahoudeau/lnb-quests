@@ -54,7 +54,7 @@ object Progress {
         val server = player.server
         val state = QuestState.get(server)
         val mine = state.player(player.uuid)
-        if (mine.season != state.season) Seasons.resetPlayer(player, mine, state.season)
+        if (Resets.stale(state, mine)) Resets.resetPlayer(player, mine, state.resetAt)
         var changed = false
         for (quest in Catalog.quests) {
             if (quest.objective.type != type || !matches(quest.objective.target)) continue

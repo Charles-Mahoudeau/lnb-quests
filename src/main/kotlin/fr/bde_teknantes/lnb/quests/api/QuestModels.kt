@@ -83,8 +83,6 @@ data class DailyEntry(val quest: String = "", val quantity: Long = 0)
 /** Today's daily quests (Paris day "YYYY-MM-DD"), the same for everyone until [endsAt]. */
 data class DailyView(val day: String = "", val endsAt: String = "", val quests: List<DailyEntry> = emptyList())
 
-data class Season(val id: Int = 0, val number: Int = 0, val startedAt: String = "")
-
 data class FlashSettings(
     val intervalMinutes: Int = 30,
     val minPlayers: Int = 2,
@@ -121,7 +119,8 @@ data class IndexView(val index: Double = 1000.0, val kGlobal: Double = 1.0)
 
 /** `GET /config`. */
 data class QuestConfig(
-    val season: Season = Season(),
+    /** When an admin last reset the quests (ISO 8601 UTC), null if never. */
+    val resetAt: String? = null,
     val quests: List<QuestDef> = emptyList(),
     val categories: List<CategoryDef> = emptyList(),
     val daily: DailyView = DailyView(),

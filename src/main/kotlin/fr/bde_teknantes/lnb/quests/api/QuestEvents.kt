@@ -17,7 +17,7 @@ import java.util.UUID
 
 /**
  * Keeps the site's `GET /api/quests/server/events` open, on its own thread, as LNB Warden does with its own stream:
- * a quest, a setting, the season or the community quest changed on the site reaches the game within a second, instead
+ * a quest, a setting, a reset or the community quest changed on the site reaches the game within a second, instead
  * of at the next poll (`sync.pollSeconds`), which still runs in case the stream is down.
  *
  * - `config`: the site's quest config is read again.

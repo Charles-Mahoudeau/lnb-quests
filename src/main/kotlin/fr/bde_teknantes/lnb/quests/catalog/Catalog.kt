@@ -15,7 +15,7 @@ import net.neoforged.fml.loading.FMLPaths
 import java.nio.file.Files
 
 /**
- * What the site says quests are: the catalogue and its categories, today's daily quests, the season, flash and
+ * What the site says quests are: the catalogue and its categories, today's daily quests, the last reset, flash and
  * anti-cheat settings, the running community quest. Read at start, every `pollSeconds` and just after midnight. Until
  * the site answers, the local quests.json stands in, so counting starts at once; nothing is paid before the site
  * confirms.

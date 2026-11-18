@@ -13,7 +13,7 @@ import fr.bde_teknantes.lnb.quests.network.QuestScreens
 import fr.bde_teknantes.lnb.quests.progress.Counting
 import fr.bde_teknantes.lnb.quests.progress.PlacedBlocks
 import fr.bde_teknantes.lnb.quests.progress.Progress
-import fr.bde_teknantes.lnb.quests.progress.Seasons
+import fr.bde_teknantes.lnb.quests.progress.Resets
 import fr.bde_teknantes.lnb.quests.progress.ServerQuests
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
@@ -104,7 +104,7 @@ class LnbQuests(modBus: IEventBus, container: ModContainer) {
 
     private fun onLoggedIn(event: PlayerEvent.PlayerLoggedInEvent) {
         val player = event.entity as? ServerPlayer ?: return
-        Seasons.onLogin(player)
+        Resets.onLogin(player)
         FlashRaces.onLogin(player)
         CommunityQuest.onLogin(player)
         QuestScreens.sendBadge(player)
@@ -122,7 +122,7 @@ class LnbQuests(modBus: IEventBus, container: ModContainer) {
         val LOGGER: Logger = LogUtils.getLogger()
 
         private fun applyConfig(server: MinecraftServer, config: fr.bde_teknantes.lnb.quests.api.QuestConfig) {
-            Seasons.onConfig(server, config.season.number)
+            Resets.onConfig(server, config.resetAt)
             CommunityQuest.onConfig(config.community)
         }
 

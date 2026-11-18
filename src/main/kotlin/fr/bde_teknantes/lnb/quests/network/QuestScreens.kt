@@ -120,7 +120,6 @@ object QuestScreens {
                     },
                 )
                 val data = ScreenData(
-                    season = state.season,
                     categories = Catalog.categories,
                     advancements = advancementTexts(player, view),
                     daily = daily,

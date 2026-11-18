@@ -43,7 +43,6 @@ data class AdvancementText(val title: String = "", val description: String = "")
 
 /** Everything the quest screen shows, sent as JSON in [QuestScreenPayload]. */
 data class ScreenData(
-    val season: Int = 0,
     val quests: List<QuestDef> = emptyList(),
     /** Individual chapters and Records groups, in display order. Empty from a site that doesn't send them yet. */
     val categories: List<CategoryDef> = emptyList(),

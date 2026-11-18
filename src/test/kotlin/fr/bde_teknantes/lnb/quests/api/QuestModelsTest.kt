@@ -25,8 +25,8 @@ class QuestModelsTest {
 
     @Test
     fun `a config with missing parts keeps its defaults`() {
-        val config = ApiClient.GSON.fromJson("""{"season":{"id":1,"number":3},"quests":[],"community":null}""", QuestConfig::class.java)
-        assertEquals(3, config.season.number)
+        val config = ApiClient.GSON.fromJson("""{"resetAt":"2026-11-18T10:30:00.000Z","quests":[],"community":null}""", QuestConfig::class.java)
+        assertEquals("2026-11-18T10:30:00.000Z", config.resetAt)
         assertEquals(300, config.pollSeconds)
         assertTrue(config.antiCheat.ignorePlacedBlocks)
     }
@@ -36,5 +36,6 @@ class QuestModelsTest {
         val config = ApiClient.GSON.fromJson("""{"season":{"id":1,"number":3},"quests":[]}""", QuestConfig::class.java)
         assertTrue(config.categories.isEmpty())
         assertTrue(config.daily.quests.isEmpty())
+        assertEquals(null, config.resetAt)
     }
 }

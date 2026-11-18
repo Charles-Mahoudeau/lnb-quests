@@ -19,8 +19,11 @@ With the site running (`feat/quests`), the flag `economy.quests` on, LNB Warden 
 8. **Community.** Plan a community quest on the site (mining, small goal) starting now. Log in again: the reminder
    shows. Mine; after `/quests sync` the site's progress moves. End it on the site (set the end in the past and wait for
    the task): qualified players are paid.
-9. **Season.** Start a new season on the site, then `/quests sync`: online players are told, counters reset, and the
-   Nether advancement is taken back (A can be ranked again). B, offline at the time, is reset at login.
+9. **Reset.** Complete a tier and claim it. Reset the quests on the site (`/admin/economy/quests`, Settings tab):
+   within a second online players are told, counters (individual, daily, flash) go back to zero, the screen and badge
+   refresh, and the Nether advancement is taken back (A can be ranked again). B, offline at the time, is reset at
+   login. The next `/quests sync` doesn't bring the old progress back on `/minecraft/quests`. Restart the server: no
+   second reset. First start of this version on an existing world: nothing is reset, `/quests status` shows the date.
 10. **Site down.** Stop the site, reach a tier, claim: "the site doesn't answer". Start it again: the tier and the claim
     go through within a few minutes, once each.
 11. **Categories.** On the site, Categories tab: add an individual category "Début de partie" with a subcategory

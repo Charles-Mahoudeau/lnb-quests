@@ -39,7 +39,7 @@ its advancement. An existing `quests.json` doesn't pick up a new default: replac
   don't count; blocks made by fluids (stone generators) do; creative and spectator players don't progress.
 
 The server keeps the site's quest event stream open (with Warden's `api.url` and `api.token`): a quest, a setting,
-the season or the community quest edited on the site, and a reward claimed there, show in the game within a second.
+a reset of the quests or the community quest edited on the site, and a reward claimed there, show in the game within a second.
 The poll (`sync.pollSeconds`) still runs in case the stream is down, and `/quests sync` forces one.
 
 Operators: `/quests flash start <quest> [goal]`, `/quests flash stop`, `/quests sync`, `/quests status`, and
